@@ -62,7 +62,7 @@ Public Class Conexion
         Me.Base = "dbsistema"
         Me.Servidor = "DESKTOP-CPRU6SB\SQLEXPRESS"
         Me.Usuario = "Monroy"
-        Me.Clave = "Monroy0043"
+        Me.Clave = "Yeyo.monry0043"
         Me.conn = New SqlConnection(CrearCadena) ' Enviamos la cadena de conexion al objeto SqlConnection
     End Sub
 

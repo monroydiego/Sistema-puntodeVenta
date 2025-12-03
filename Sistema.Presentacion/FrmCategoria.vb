@@ -11,6 +11,13 @@
         DgvListado.Columns(2).Width = 150 ' nombre 
         DgvListado.Columns(3).Width = 400 ' descripcion
         DgvListado.Columns(4).Width = 100 ' estado
+
+
+        DgvListado.Columns.Item("Seleccionar").Visible = False ' Ocultamos la columna seleccionar 
+        BtnEliminar.Visible = False ' Ocultamos el  botón de eliminar
+        BtnActivar.Visible = False ' Ocultamos el botón de activar
+        BtnDesactivar.Visible = False ' Ocultamos el el botón de desactivar
+        ChkSeleccionar.CheckState = False
     End Sub
 
     ' Metodo buscar
@@ -124,11 +131,87 @@
     End Sub
 
     Private Sub ChkSeleccionar_CheckedChanged(sender As Object, e As EventArgs) Handles ChkSeleccionar.CheckedChanged
-        If ChkSeleccionar.CheckState = CheckState.Checked Then
-            DgvListado.Columns.Item("Selecionar").Visible = True
-            BtnEliminar.Visible = True
-            BtnActivar.Visible = True
-            BtnDesactivar.Visible = True
+        If ChkSeleccionar.CheckState = CheckState.Checked Then ' Si es estado del Checkbox selecionar es "Checked" Entonces
+            DgvListado.Columns.Item("Seleccionar").Visible = True ' Vamos a mostrar la columna seleccionar
+            BtnEliminar.Visible = True ' Mostramos el botón de eliminar
+            BtnActivar.Visible = True ' Mostramos el botón de activar
+            BtnDesactivar.Visible = True ' Mostramos el botón de desactivar
+        Else
+            DgvListado.Columns.Item("Seleccionar").Visible = False ' Ocultamos la columna seleccionar 
+            BtnEliminar.Visible = False ' Ocultamos el  botón de eliminar
+            BtnActivar.Visible = False ' Ocultamos el botón de activar
+            BtnDesactivar.Visible = False ' Ocultamos el el botón de desactivar
+
+        End If
+    End Sub
+
+    Private Sub DgvListado_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles DgvListado.CellContentClick
+        If e.ColumnIndex = DgvListado.Columns.Item("Seleccionar").Index Then ' si el indice de la columna es igual a seleccionar
+            ' entonces
+
+            Dim chkcell As DataGridViewCheckBoxCell = DgvListado.Rows(e.RowIndex).Cells("Seleccionar") ' le damos el valor a chk a la columna que seleccionamos
+            chkcell.Value = Not chkcell.Value ' capturamos el valor de esa columna que estamos seleccionando
+
+        End If
+    End Sub
+
+    Private Sub BtnEliminar_Click(sender As Object, e As EventArgs) Handles BtnEliminar.Click
+        If (MsgBox("¿Estas seguro de que quieres eliminar los registros seleccionados?", vbYesNo + vbQuestion, "Eliminar Registros") = vbYes) Then
+            Try
+                Dim Neg As New Negocio.NCategoria ' creamos una instancia que haga referencia a la capa Negocio y a la clase NCategoria
+                ' para cada fila de DataGridViewRow recorrer todas las filas de mi dgvListado
+                For Each row As DataGridViewRow In DgvListado.Rows
+
+                    Dim marcado As Boolean = Convert.ToBoolean(row.Cells("Seleccionar").Value)
+                    If marcado Then ' si  marcado es true, entonces
+                        Dim OneKey As Integer = Convert.ToInt32(row.Cells("ID").Value) ' Creamos una variable para convertir toda la fila a un int 
+                        Neg.Eliminar(OneKey)
+                    End If
+                Next
+                Me.Listar()
+            Catch ex As Exception
+                MsgBox(ex.Message)
+            End Try
+        End If
+    End Sub
+
+    Private Sub BtnActivar_Click(sender As Object, e As EventArgs) Handles BtnActivar.Click
+        If (MsgBox("¿Estas seguro de que quieres activar los registros seleccionados?", vbYesNo + vbQuestion, "Activar registros") = vbYes) Then
+            Try
+                Dim Neg As New Negocio.NCategoria ' creamos una instancia que haga referencia a la capa Negocio y a la clase NCategoria
+                ' para cada fila de DataGridViewRow recorrer todas las filas de mi dgvListado
+                For Each row As DataGridViewRow In DgvListado.Rows
+
+                    Dim marcado As Boolean = Convert.ToBoolean(row.Cells("Seleccionar").Value)
+                    If marcado Then ' si  marcado es true, entonces
+                        Dim OneKey As Integer = Convert.ToInt32(row.Cells("ID").Value) ' Creamos una variable para convertir toda la fila a un int 
+                        Neg.Activar(OneKey)
+                    End If
+                Next
+                Me.Listar()
+            Catch ex As Exception
+                MsgBox(ex.Message)
+            End Try
+        End If
+    End Sub
+
+    Private Sub BtnDesactivar_Click(sender As Object, e As EventArgs) Handles BtnDesactivar.Click
+        If (MsgBox("¿Estas seguro de que quieres desactivar los registros seleccionados?", vbYesNo + vbQuestion, "Desactivar registros") = vbYes) Then
+            Try
+                Dim Neg As New Negocio.NCategoria ' creamos una instancia que haga referencia a la capa Negocio y a la clase NCategoria
+                ' para cada fila de DataGridViewRow recorrer todas las filas de mi dgvListado
+                For Each row As DataGridViewRow In DgvListado.Rows
+
+                    Dim marcado As Boolean = Convert.ToBoolean(row.Cells("Seleccionar").Value)
+                    If marcado Then ' si  marcado es true, entonces
+                        Dim OneKey As Integer = Convert.ToInt32(row.Cells("ID").Value) ' Creamos una variable para convertir toda la fila a un int 
+                        Neg.Desactivar(OneKey)
+                    End If
+                Next
+                Me.Listar()
+            Catch ex As Exception
+                MsgBox(ex.Message)
+            End Try
         End If
     End Sub
 End Class
