@@ -94,4 +94,24 @@ Public Class MDIParent1
         frm.MdiParent = Me ' Establecemos que este formulario es el hijo del formulario principal
         frm.Show() ' mostramos el formulario 
     End Sub
+
+    Private Sub ArticulasToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ArticulasToolStripMenuItem.Click
+        Dim frm As New FrmArticulo
+        frm.MdiParent = Me
+        frm.Show()
+    End Sub
+
+    Private Sub RolesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles RolesToolStripMenuItem.Click
+        Dim frm As New FrmRol
+
+        frm.MdiParent = Me
+        frm.Show()
+    End Sub
+
+    Private Sub UsuariosToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles UsuariosToolStripMenuItem.Click
+        Dim frm As New FrmUsuario
+
+        frm.MdiParent = Me ' indicamos que el formulario padre es este
+        frm.Show()
+    End Sub
 End Class

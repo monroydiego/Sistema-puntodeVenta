@@ -1,7 +1,7 @@
 ﻿Imports System.Data.SqlClient
-Imports System.Runtime.CompilerServices
 Imports Sistema.Entidades
-Public Class DCategoria
+
+Public Class DArticulo
     ' Todos estos Metodos y funciones estan relacionadas con la tabla categeroia de la base de datos
     ' Desde la capa negocio se llaman estos metodos para las funciones de la aplicacion 
     Inherits Conexion ' Hereda de la clase Conexion para poder usar sus propiedades y metodos
@@ -16,7 +16,7 @@ Public Class DCategoria
             ' El primer parametro hace referencia  al procedimiento almacenado de la base de datos
             ' El segundo parametro hace refeencia a la cadena de conexion para la base de datos
             ' Como heredamos la clase de la clase conexion, podemos usar MyBase para acceder a sus propiedades y metodos
-            Dim Comando As New SqlCommand("categoria_listar", MyBase.conn)
+            Dim Comando As New SqlCommand("articulo_listar", MyBase.conn)
             Comando.CommandType = CommandType.StoredProcedure ' indicamos que es un procedimiento almacenado 
             MyBase.conn.Open() ' Abrimos la conexion
             Resultado = Comando.ExecuteReader() ' Ejecutamos el comando y almacenamos el resultado en Resultado
@@ -37,7 +37,7 @@ Public Class DCategoria
             ' El primer parametro hace referencia  al procedimiento almacenado de la base de datos
             ' El segundo parametro hace refeencia a la cadena de conexion para la base de datos
             ' Como heredamos la clase de la clase conexion, podemos usar MyBase para acceder a sus propiedades y metodos
-            Dim Comando As New SqlCommand("categoria_buscar", MyBase.conn)
+            Dim Comando As New SqlCommand("articulo_buscar", MyBase.conn)
             Comando.CommandType = CommandType.StoredProcedure ' indicamos que es un procedimiento almacenado 
             Comando.Parameters.Add("@Valor", SqlDbType.VarChar).Value = Valor ' Agregamos el parametro de busqueda del procedimiento almacenado
             MyBase.conn.Open() ' Abrimos la conexion
@@ -50,39 +50,22 @@ Public Class DCategoria
         End Try
     End Function
 
-    ' Funcion Seleccionar
-    Public Function Seleccionar() As DataTable
-        Try
-            Dim Resultado As SqlDataReader
-            Dim Tabla As New DataTable ' Tabla hace una instancia en la clase DataTable 
-
-            ' Creamos un comando SQL para ejecutar el procedimiento almacenado
-            ' El primer parametro hace referencia  al procedimiento almacenado de la base de datos
-            ' El segundo parametro hace refeencia a la cadena de conexion para la base de datos
-            ' Como heredamos la clase de la clase conexion, podemos usar MyBase para acceder a sus propiedades y metodos
-            Dim Comando As New SqlCommand("categoria_seleccionar", MyBase.conn)
-            Comando.CommandType = CommandType.StoredProcedure ' indicamos que es un procedimiento almacenado 
-            MyBase.conn.Open() ' Abrimos la conexion
-            Resultado = Comando.ExecuteReader() ' Ejecutamos el comando y almacenamos el resultado en Resultado
-            Tabla.Load(Resultado) ' Cargamos el resultado en la tabla
-            MyBase.conn.Close() ' Cerramos la conexion
-            Return Tabla ' Retornamos la tabla con los datos
-        Catch ex As Exception
-            Throw ex
-        End Try
-    End Function
-
     ' Metodo para insertar una categoria
-    Public Sub Insertar(Obj As Categoria)
+    Public Sub Insertar(Obj As Articulo)
         Try
-            ' Obj hace una instancia en la clase categoria
+            ' Obj hace una instancia en la clase Articulo
             ' Creamos un comando SQL para ejecutar el procedimiento almacenado
             ' El primer parametro hace referencia  al procedimiento almacenado de la base de datos
             ' El segundo parametro hace refeencia a la cadena de conexion para la base de datos
             ' Como heredamos la clase de la clase conexion, podemos usar MyBase para acceder a sus propiedades y metodos
-            Dim Comando As New SqlCommand("categoria_insertar", MyBase.conn)
+            Dim Comando As New SqlCommand("articulo_insertar", MyBase.conn)
             Comando.CommandType = CommandType.StoredProcedure ' indicamos que es un procedimiento almacenado 
-            Comando.Parameters.Add("@Nombre", SqlDbType.VarChar).Value = Obj.Nombre ' Agrega el parámetro @Nombre al comando SQL, asignando el valor de la propiedad Nombre del objeto Categoria. Esto permite enviar el nombre de la nueva categoría al procedimiento almacenado en la base de datos.
+            Comando.Parameters.Add("@idcategoria", SqlDbType.Int).Value = Obj.IdCategoria
+            Comando.Parameters.Add("@codigo", SqlDbType.VarChar).Value = Obj.Codigo
+            Comando.Parameters.Add("@nombre", SqlDbType.VarChar).Value = Obj.Nombre ' Agrega el parámetro @Nombre al comando SQL, asignando el valor de la propiedad Nombre del objeto Categoria. Esto permite enviar el nombre de la nueva categoría al procedimiento almacenado en la base de datos.
+            Comando.Parameters.Add("@precio_venta", SqlDbType.Decimal).Value = Obj.PrecioVenta
+            Comando.Parameters.Add("@stock", SqlDbType.Int).Value = Obj.Stock
+            Comando.Parameters.Add("@imagen", SqlDbType.VarChar).Value = Obj.Imagen
             Comando.Parameters.Add("@descripcion", SqlDbType.VarChar).Value = Obj.Descripcion
             MyBase.conn.Open() ' Abrimos la conexion
             Comando.ExecuteNonQuery() ' Ejecutamos el comando y almacenamos el resultado en Resultado
@@ -93,14 +76,19 @@ Public Class DCategoria
     End Sub
 
 
-    ' Metodo para eliminar una categoia
-    Public Sub Actualizar(Obj As Categoria)
+    ' Metodo para Actualizar una categoia
+    Public Sub Actualizar(Obj As Articulo)
         Try
-            Dim Comando As New SqlCommand("categoria_actualizar", MyBase.conn)
+            Dim Comando As New SqlCommand("articulo_actualizar", MyBase.conn)
             Comando.CommandType = CommandType.StoredProcedure
+            Comando.Parameters.Add("@idarticulo", SqlDbType.Int).Value = Obj.IdArticulo
             Comando.Parameters.Add("@idcategoria", SqlDbType.Int).Value = Obj.IdCategoria
+            Comando.Parameters.Add("@codigo", SqlDbType.VarChar).Value = Obj.Codigo
             Comando.Parameters.Add("@nombre", SqlDbType.VarChar).Value = Obj.Nombre
+            Comando.Parameters.Add("@precio_venta", SqlDbType.Decimal).Value = Obj.PrecioVenta
+            Comando.Parameters.Add("@stock", SqlDbType.Int).Value = Obj.Stock
             Comando.Parameters.Add("@descripcion", SqlDbType.VarChar).Value = Obj.Descripcion
+            Comando.Parameters.Add("@imagen", SqlDbType.VarChar).Value = Obj.Imagen
             MyBase.conn.Open() ' Abrimos la conexion 
             Comando.ExecuteNonQuery()
             MyBase.conn.Close()
@@ -112,9 +100,9 @@ Public Class DCategoria
     ' Metodo para eliminar una categoria
     Public Sub Eliminar(Id As Integer)
         Try
-            Dim Comando As New SqlCommand("categoria_eliminar", MyBase.conn)
+            Dim Comando As New SqlCommand("articulo_eliminar", MyBase.conn)
             Comando.CommandType = CommandType.StoredProcedure
-            Comando.Parameters.Add("@idcategoria", SqlDbType.Int).Value = Id
+            Comando.Parameters.Add("@idarticulo", SqlDbType.Int).Value = Id
             MyBase.conn.Open() ' Abrimos la conexion 
             Comando.ExecuteNonQuery()
             MyBase.conn.Close()
@@ -127,9 +115,9 @@ Public Class DCategoria
 
     Public Sub Desactivar(Id As Integer)
         Try
-            Dim Comando As New SqlCommand("categoria_desactivar", MyBase.conn)
+            Dim Comando As New SqlCommand("articulo_desactivar", MyBase.conn)
             Comando.CommandType = CommandType.StoredProcedure
-            Comando.Parameters.Add("@idcategoria", SqlDbType.Int).Value = Id ' se le envia el id de la categoria que se desea desactivar 
+            Comando.Parameters.Add("@idarticulo", SqlDbType.Int).Value = Id ' se le envia el id del articulo que se desea desactivar 
             MyBase.conn.Open() ' Abrimos la conexion 
             Comando.ExecuteNonQuery()
             MyBase.conn.Close()
@@ -141,9 +129,9 @@ Public Class DCategoria
     ' Metodo para activar una categoria 
     Public Sub Activar(Id As Integer)
         Try
-            Dim Comando As New SqlCommand("categoria_activar", MyBase.conn)
+            Dim Comando As New SqlCommand("articulo_activar", MyBase.conn)
             Comando.CommandType = CommandType.StoredProcedure
-            Comando.Parameters.Add("@idcategoria", SqlDbType.Int).Value = Id ' se envia id  de la categoria que se desea activar
+            Comando.Parameters.Add("@idarticulo", SqlDbType.Int).Value = Id ' se envia id  del articulo que se desea activar
             MyBase.conn.Open() ' Abrimos la conexion 
             Comando.ExecuteNonQuery()
             MyBase.conn.Close()
