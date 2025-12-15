@@ -105,7 +105,7 @@ Public Class DUsuario
             Dim Comando As New SqlCommand("usuario_actualizar", MyBase.conn)
             Comando.CommandType = CommandType.StoredProcedure
             Comando.Parameters.Add("@idrol", SqlDbType.Int).Value = Obj.IdRol
-            Comando.Parameters.Add("@iusuario", SqlDbType.Int).Value = Obj.IdUsuario
+            Comando.Parameters.Add("@idusuario", SqlDbType.Int).Value = Obj.IdUsuario
             Comando.Parameters.Add("@nombre", SqlDbType.VarChar).Value = Obj.Nombre
             Comando.Parameters.Add("@tipo_documento", SqlDbType.VarChar).Value = Obj.TipoDocumento
             Comando.Parameters.Add("@num_documento", SqlDbType.VarChar).Value = Obj.NumDocumento
@@ -114,7 +114,6 @@ Public Class DUsuario
             Comando.Parameters.Add("@email", SqlDbType.VarChar).Value = Obj.Email
             Comando.Parameters.Add("@clave", SqlDbType.VarChar).Value = Obj.Clave
             MyBase.conn.Open() ' Abrimos la conexion
-            MyBase.conn.Open() ' Abrimos la conexion 
             Comando.ExecuteNonQuery()
             MyBase.conn.Close()
         Catch ex As Exception
