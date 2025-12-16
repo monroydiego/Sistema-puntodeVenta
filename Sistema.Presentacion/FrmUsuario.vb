@@ -104,7 +104,7 @@ Public Class FrmUsuario
                 Dim Obj As New Entidades.Usuario 'Declaramos un objeto en donde se haga la referencia a entidades, entidad hace referencia a Articulo
                 Dim Neg As New Negocio.NUsuario ' se hace referencia a la capa negocio de NArticulo
 
-                Obj.IdUsuario = TxtId.Text
+
                 Obj.IdRol = CboRol.SelectedValue ' el idcategoria, será el valor seleccionado en el combo box
                 Obj.Nombre = TxtNombre.Text ' estos parametros se esperan de la capa de Ncategoria y Dcategoria en la funcion agregar
                 Obj.TipoDocumento = CboTipoDocumento.Text

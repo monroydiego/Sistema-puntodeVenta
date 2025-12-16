@@ -338,7 +338,7 @@ Partial Class FrmUsuario
         '
         'BtnActualizar
         '
-        Me.BtnActualizar.Location = New System.Drawing.Point(122, 393)
+        Me.BtnActualizar.Location = New System.Drawing.Point(122, 364)
         Me.BtnActualizar.Name = "BtnActualizar"
         Me.BtnActualizar.Size = New System.Drawing.Size(129, 23)
         Me.BtnActualizar.TabIndex = 7

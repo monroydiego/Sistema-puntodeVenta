@@ -24,6 +24,10 @@ Public Class FrmLogin
                     MsgBox("El usuario no se encuentra activo", vbOKOnly + vbCritical, "Usuario inactivo")
                 Else
                     Me.Hide() ' Ocultamos el formulario de login
+                    MDIParent1.IdUsuario = Obj.IdUsuario ' Obtenemos los datos del usuario logueado
+                    MDIParent1.IdRol = Obj.IdRol
+                    MDIParent1.Rol = Obj.Rol
+                    MDIParent1.Nombre = Obj.Nombre
                     MDIParent1.Show() ' mostramos el formulario principal
                 End If
             End If
@@ -32,4 +36,5 @@ Public Class FrmLogin
             MsgBox(ex.Message)
         End Try
     End Sub
+
 End Class

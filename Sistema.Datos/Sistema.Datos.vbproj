@@ -67,6 +67,7 @@
     <Compile Include="Conexion.vb" />
     <Compile Include="DArticulo.vb" />
     <Compile Include="DCategoria.vb" />
+    <Compile Include="DPersona.vb" />
     <Compile Include="DRol.vb" />
     <Compile Include="DUsuario.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />

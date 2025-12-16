@@ -1,6 +1,10 @@
 ﻿Imports System.Windows.Forms
 
 Public Class MDIParent1
+    Private _IdUsuario As String
+    Private _IdRol As String
+    Private _Rol As String
+    Private _Nombre As String
 
     Private Sub ShowNewForm(ByVal sender As Object, ByVal e As EventArgs) Handles NewToolStripButton.Click, NewWindowToolStripMenuItem.Click
         ' Cree una nueva instancia del formulario secundario.
@@ -85,8 +89,72 @@ Public Class MDIParent1
 
     Private m_ChildFormNumber As Integer
 
-    Private Sub MDIParent1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+    Public Property IdUsuario As String
+        Get
+            Return _IdUsuario
+        End Get
+        Set(value As String)
+            _IdUsuario = value
+        End Set
+    End Property
 
+    Public Property IdRol As String
+        Get
+            Return _IdRol
+        End Get
+        Set(value As String)
+            _IdRol = value
+        End Set
+    End Property
+
+    Public Property Rol As String
+        Get
+            Return _Rol
+        End Get
+        Set(value As String)
+            _Rol = value
+        End Set
+    End Property
+
+    Public Property Nombre As String
+        Get
+            Return _Nombre
+        End Get
+        Set(value As String)
+            _Nombre = value
+        End Set
+    End Property
+
+    Private Sub MDIParent1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+        MsgBox("Bienvenido " & Nombre, vbOKOnly + vbInformation, "Bienvenido al sistema") ' Mostramos el nobre del usuario que inició sesión
+
+        TsBarraInferior.Text = "Desarollador por Diego Monroy, Usuario: " & Me.Nombre & " -Rol: " & Me.Rol
+
+        If (Me.Rol = "Administrador") Then
+            MnuAlmacen.Enabled = True
+            MnuAcceso.Enabled = True
+            MnuIngresos.Enabled = True
+            MnuVentas.Enabled = True
+            MnuConsultas.Enabled = True
+        ElseIf (Me.Rol = "Almacenero") Then
+            MnuAlmacen.Enabled = True
+            MnuAcceso.Enabled = False
+            MnuIngresos.Enabled = True
+            MnuVentas.Enabled = False
+            MnuConsultas.Enabled = False
+        ElseIf (Me.Rol = "Vendedor") Then
+            MnuAlmacen.Enabled = False
+            MnuAcceso.Enabled = False
+            MnuIngresos.Enabled = False
+            MnuVentas.Enabled = True
+            MnuConsultas.Enabled = False
+        Else
+            MnuAlmacen.Enabled = False
+            MnuAcceso.Enabled = False
+            MnuIngresos.Enabled = False
+            MnuVentas.Enabled = False
+            MnuConsultas.Enabled = False
+        End If
     End Sub
 
     Private Sub CateToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles CateToolStripMenuItem.Click
@@ -112,6 +180,22 @@ Public Class MDIParent1
         Dim frm As New FrmUsuario
 
         frm.MdiParent = Me ' indicamos que el formulario padre es este
+        frm.Show()
+    End Sub
+
+    Private Sub MnuSalir_Click(sender As Object, e As EventArgs) Handles MnuSalir.Click
+        If (MsgBox("¿Estás seguro que quieres salir del sistema?", vbYesNo + vbQuestion, "Sistema") = MsgBoxResult.Yes) Then
+            End
+        End If
+    End Sub
+
+    Private Sub MDIParent1_FormClosing(sender As Object, e As FormClosingEventArgs) Handles MyBase.FormClosing
+        End
+    End Sub
+
+    Private Sub ProovedoresToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ProovedoresToolStripMenuItem.Click
+        Dim frm As New FrmProveedores
+        frm.MdiParent = Me
         frm.Show()
     End Sub
 End Class
