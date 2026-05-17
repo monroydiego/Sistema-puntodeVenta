@@ -128,7 +128,7 @@ Public Class MDIParent1
     Private Sub MDIParent1_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         MsgBox("Bienvenido " & Nombre, vbOKOnly + vbInformation, "Bienvenido al sistema") ' Mostramos el nobre del usuario que inició sesión
 
-        TsBarraInferior.Text = "Desarollador por Diego Monroy, Usuario: " & Me.Nombre & " -Rol: " & Me.Rol
+        TsBarraInferior.Text = "Desarollador por Diego Monroy | Usuario: " & Me.Nombre & " -Rol: " & Me.Rol
 
         If (Me.Rol = "Administrador") Then
             MnuAlmacen.Enabled = True
@@ -195,6 +195,19 @@ Public Class MDIParent1
 
     Private Sub ProovedoresToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ProovedoresToolStripMenuItem.Click
         Dim frm As New FrmProveedores
+        frm.MdiParent = Me
+        frm.Show()
+    End Sub
+
+    Private Sub ClientesToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ClientesToolStripMenuItem.Click
+        Dim frm As New FrmCliente
+        frm.MdiParent = Me
+        frm.Show()
+
+    End Sub
+
+    Private Sub ComprasToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ComprasToolStripMenuItem.Click
+        Dim frm As New FrmIngreso
         frm.MdiParent = Me
         frm.Show()
     End Sub

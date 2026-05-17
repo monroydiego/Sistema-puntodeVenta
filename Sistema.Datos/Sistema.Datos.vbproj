@@ -67,9 +67,11 @@
     <Compile Include="Conexion.vb" />
     <Compile Include="DArticulo.vb" />
     <Compile Include="DCategoria.vb" />
+    <Compile Include="DIngreso.vb" />
     <Compile Include="DPersona.vb" />
     <Compile Include="DRol.vb" />
     <Compile Include="DUsuario.vb" />
+    <Compile Include="DVenta.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>

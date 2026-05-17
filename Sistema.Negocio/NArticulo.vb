@@ -26,6 +26,28 @@ Public Class NArticulo
             Return Nothing
         End Try
     End Function
+    Public Function BuscarCodigo(Valor As String) As Articulo
+        Try
+            Dim Datos As New DArticulo ' Creamos una instancia de la clase DCategoria 
+            Dim Tabla As New DataTable ' Creamos una tabla en memoria para almacenar los datos de la consulta
+            Dim Art As New Articulo
+            Tabla = Datos.BuscarCodigo(Valor) ' Llamamos el metodo Buscar de la clase de la capa datos
+            If (Tabla.Rows.Count > 0) Then
+                Art.IdArticulo = Tabla.Rows(0).Item(0).ToString
+                Art.Codigo = Tabla.Rows(0).Item(1).ToString
+                Art.Nombre = Tabla.Rows(0).Item(2).ToString
+                Art.PrecioVenta = Tabla.Rows(0).Item(3).ToString
+                Art.Stock = Tabla.Rows(0).Item(4).ToString
+
+                Return Art
+            Else
+                Return Nothing
+            End If
+        Catch ex As Exception
+            MsgBox(ex.Message)
+            Return Nothing
+        End Try
+    End Function
 
     Public Function Insertar(Obj As Articulo) As Boolean ' Si logramos insertar devolvemos un True o sino un False 
         Try ' Si logramos Insertar devolvemos un True 

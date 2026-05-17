@@ -25,6 +25,7 @@ Public Class FrmLogin
                 Else
                     Me.Hide() ' Ocultamos el formulario de login
                     MDIParent1.IdUsuario = Obj.IdUsuario ' Obtenemos los datos del usuario logueado
+                    Variables.IdUsuario = Obj.IdUsuario
                     MDIParent1.IdRol = Obj.IdRol
                     MDIParent1.Rol = Obj.Rol
                     MDIParent1.Nombre = Obj.Nombre

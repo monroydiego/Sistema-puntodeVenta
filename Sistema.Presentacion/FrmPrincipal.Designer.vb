@@ -132,13 +132,13 @@ Partial Class MDIParent1
         'CateToolStripMenuItem
         '
         Me.CateToolStripMenuItem.Name = "CateToolStripMenuItem"
-        Me.CateToolStripMenuItem.Size = New System.Drawing.Size(130, 22)
+        Me.CateToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
         Me.CateToolStripMenuItem.Text = "Cate&gorías"
         '
         'ArticulasToolStripMenuItem
         '
         Me.ArticulasToolStripMenuItem.Name = "ArticulasToolStripMenuItem"
-        Me.ArticulasToolStripMenuItem.Size = New System.Drawing.Size(130, 22)
+        Me.ArticulasToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
         Me.ArticulasToolStripMenuItem.Text = "&Articulos"
         '
         'MnuAcceso
@@ -151,13 +151,13 @@ Partial Class MDIParent1
         'RolesToolStripMenuItem
         '
         Me.RolesToolStripMenuItem.Name = "RolesToolStripMenuItem"
-        Me.RolesToolStripMenuItem.Size = New System.Drawing.Size(119, 22)
+        Me.RolesToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
         Me.RolesToolStripMenuItem.Text = "&Roles"
         '
         'UsuariosToolStripMenuItem
         '
         Me.UsuariosToolStripMenuItem.Name = "UsuariosToolStripMenuItem"
-        Me.UsuariosToolStripMenuItem.Size = New System.Drawing.Size(119, 22)
+        Me.UsuariosToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
         Me.UsuariosToolStripMenuItem.Text = "&Usuarios"
         '
         'MnuConsultas
@@ -170,7 +170,7 @@ Partial Class MDIParent1
         'ConsultaVentasToolStripMenuItem
         '
         Me.ConsultaVentasToolStripMenuItem.Name = "ConsultaVentasToolStripMenuItem"
-        Me.ConsultaVentasToolStripMenuItem.Size = New System.Drawing.Size(158, 22)
+        Me.ConsultaVentasToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
         Me.ConsultaVentasToolStripMenuItem.Text = "Consulta Ventas"
         '
         'ViewMenu

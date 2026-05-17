@@ -1,4 +1,4 @@
-﻿Public Class FrmProveedores
+﻿Public Class FrmCliente
     Private Sub Formato()
         ' se agregan 10 columnas propias del Stored Procedure 
         ' Agregaremos 1 columna del Listado (seleccionar) 
@@ -28,7 +28,7 @@
         Try
             'Creamos una instancia que haga referencia a la capa negocio
             Dim Neg As New Negocio.NPersona ' Objeto que hace una instania a la clase Ncategoria de la capa negocio 
-            DgvListado.DataSource = Neg.ListarProveedores() ' obtener el listado de categorias desde la capa negocio 
+            DgvListado.DataSource = Neg.ListarClientes() ' obtener el listado de categorias desde la capa negocio 
             LblTotal.Text = "Total Registros: " & DgvListado.DataSource.Rows.Count.ToString() ' Muestra el total de registros en el Label
             Me.Formato() ' Llamamos al metodo Formato para establecer el formato de las columnas
             Me.Limpiar()
@@ -44,7 +44,7 @@
             Dim Neg As New Negocio.NPersona ' Objeto que hace una instania a la clase Ncategoria de la capa negocio 
             Dim Valor As String ' Declara una variable para almacenar el valor de búsqueda
             Valor = TxtValor.Text ' se almacenará el valor de la caja de texto a la variable valor
-            DgvListado.DataSource = Neg.BuscarProveedores(Valor) ' obtener el listado de categorias desde la capa negocio, utilizando el valor de búsqueda
+            DgvListado.DataSource = Neg.BuscarClientes(Valor) ' obtener el listado de categorias desde la capa negocio, utilizando el valor de búsqueda
             LblTotal.Text = "Total Registros: " & DgvListado.DataSource.Rows.Count.ToString() ' Muestra el total de registros encontrados
             Me.Formato() ' Llamamos al metodo Formato para establecer el formato de las columnas
         Catch ex As Exception
@@ -66,7 +66,7 @@
         TxtNombre.Text = "" ' Limpia el campo de texto del nombre
         TxtTelefono.Text = "" ' Limpia el campo de texto de la descripción
     End Sub
-    Private Sub FrmProveedores_Load(sender As Object, e As EventArgs) Handles MyBase.Load
+    Private Sub FrmCliente_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Me.Listar()
     End Sub
 
@@ -83,7 +83,7 @@
                 Dim Neg As New Negocio.NPersona ' se hace referencia a la capa negocio de NArticulo
 
 
-                Obj.TipoPersona = "Proveedor"
+                Obj.TipoPersona = "Cliente"
                 Obj.Nombre = TxtNombre.Text ' estos parametros se esperan de la capa de Ncategoria y Dcategoria en la funcion agregar
                 Obj.TipoDocumento = CboTipoDocumento.Text
                 Obj.NumDocumento = TxtNumDocumento.Text
@@ -100,7 +100,7 @@
                     'If (txtImagen.Text <> "") Then
                     'RutaDestino = Directorio & txtImagen.Text ' Concatenamos la ruta de destino -- > c:\sistema\ ..
                     'File.Copy(RutaOrigen, RutaDestino) ' que copie la ruta de la imagen  a la ruta de nuestro directoria
-                    'End If     
+                    'End If
 
                     Me.Listar() ' Actualiza la lista de categorías
 
@@ -141,7 +141,7 @@
                 Dim Neg As New Negocio.NPersona ' se hace referencia a la capa negocio de NArticulo
 
                 Obj.IdPersona = TxtId.Text
-                Obj.TipoPersona = "Proveedor"
+                Obj.TipoPersona = "Cliente"
                 Obj.Nombre = TxtNombre.Text ' estos parametros se esperan de la capa de Ncategoria y Dcategoria en la funcion agregar
                 Obj.TipoDocumento = CboTipoDocumento.Text
                 Obj.NumDocumento = TxtNumDocumento.Text

@@ -81,6 +81,7 @@
     </Compile>
     <Compile Include="NArticulo.vb" />
     <Compile Include="NCategoria.vb" />
+    <Compile Include="NIngreso.vb" />
     <Compile Include="NPersona.vb" />
     <Compile Include="NRol.vb" />
     <Compile Include="NUsuario.vb" />

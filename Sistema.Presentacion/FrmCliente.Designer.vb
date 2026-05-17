@@ -1,5 +1,5 @@
 ﻿<Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class FrmProveedores
+Partial Class FrmCliente
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
@@ -23,12 +23,19 @@ Partial Class FrmProveedores
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Me.ErrorIcono = New System.Windows.Forms.ErrorProvider(Me.components)
-        Me.ContextMenuStrip1 = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.TabGeneral = New System.Windows.Forms.TabControl()
+        Me.TabPage1 = New System.Windows.Forms.TabPage()
+        Me.BtnEliminar = New System.Windows.Forms.Button()
+        Me.ChkSeleccionar = New System.Windows.Forms.CheckBox()
+        Me.BtnBuscar = New System.Windows.Forms.Button()
+        Me.TxtValor = New System.Windows.Forms.TextBox()
+        Me.LblTotal = New System.Windows.Forms.Label()
+        Me.DgvListado = New System.Windows.Forms.DataGridView()
+        Me.Seleccionar = New System.Windows.Forms.DataGridViewCheckBoxColumn()
         Me.TabPage2 = New System.Windows.Forms.TabPage()
         Me.TxtEmail = New System.Windows.Forms.TextBox()
-        Me.Label7 = New System.Windows.Forms.Label()
         Me.CboTipoDocumento = New System.Windows.Forms.ComboBox()
+        Me.Label7 = New System.Windows.Forms.Label()
         Me.Label3 = New System.Windows.Forms.Label()
         Me.Label5 = New System.Windows.Forms.Label()
         Me.Label4 = New System.Windows.Forms.Label()
@@ -42,30 +49,104 @@ Partial Class FrmProveedores
         Me.BtnInsertar = New System.Windows.Forms.Button()
         Me.LblTelefono = New System.Windows.Forms.Label()
         Me.LblNombre = New System.Windows.Forms.Label()
-        Me.TabPage1 = New System.Windows.Forms.TabPage()
-        Me.BtnEliminar = New System.Windows.Forms.Button()
-        Me.ChkSeleccionar = New System.Windows.Forms.CheckBox()
-        Me.BtnBuscar = New System.Windows.Forms.Button()
-        Me.TxtValor = New System.Windows.Forms.TextBox()
-        Me.LblTotal = New System.Windows.Forms.Label()
-        Me.DgvListado = New System.Windows.Forms.DataGridView()
-        Me.Seleccionar = New System.Windows.Forms.DataGridViewCheckBoxColumn()
-        Me.TabGeneral = New System.Windows.Forms.TabControl()
-        CType(Me.ErrorIcono, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.TabPage2.SuspendLayout()
+        Me.ContextMenuStrip1 = New System.Windows.Forms.ContextMenuStrip(Me.components)
+        Me.ErrorIcono = New System.Windows.Forms.ErrorProvider(Me.components)
+        Me.TabGeneral.SuspendLayout()
         Me.TabPage1.SuspendLayout()
         CType(Me.DgvListado, System.ComponentModel.ISupportInitialize).BeginInit()
-        Me.TabGeneral.SuspendLayout()
+        Me.TabPage2.SuspendLayout()
+        CType(Me.ErrorIcono, System.ComponentModel.ISupportInitialize).BeginInit()
         Me.SuspendLayout()
         '
-        'ErrorIcono
+        'TabGeneral
         '
-        Me.ErrorIcono.ContainerControl = Me
+        Me.TabGeneral.Controls.Add(Me.TabPage1)
+        Me.TabGeneral.Controls.Add(Me.TabPage2)
+        Me.TabGeneral.Location = New System.Drawing.Point(2, 12)
+        Me.TabGeneral.Name = "TabGeneral"
+        Me.TabGeneral.SelectedIndex = 0
+        Me.TabGeneral.Size = New System.Drawing.Size(1146, 447)
+        Me.TabGeneral.TabIndex = 4
         '
-        'ContextMenuStrip1
+        'TabPage1
         '
-        Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
-        Me.ContextMenuStrip1.Size = New System.Drawing.Size(61, 4)
+        Me.TabPage1.Controls.Add(Me.BtnEliminar)
+        Me.TabPage1.Controls.Add(Me.ChkSeleccionar)
+        Me.TabPage1.Controls.Add(Me.BtnBuscar)
+        Me.TabPage1.Controls.Add(Me.TxtValor)
+        Me.TabPage1.Controls.Add(Me.LblTotal)
+        Me.TabPage1.Controls.Add(Me.DgvListado)
+        Me.TabPage1.Location = New System.Drawing.Point(4, 22)
+        Me.TabPage1.Name = "TabPage1"
+        Me.TabPage1.Padding = New System.Windows.Forms.Padding(3)
+        Me.TabPage1.Size = New System.Drawing.Size(1138, 421)
+        Me.TabPage1.TabIndex = 0
+        Me.TabPage1.Text = "Listado"
+        Me.TabPage1.UseVisualStyleBackColor = True
+        '
+        'BtnEliminar
+        '
+        Me.BtnEliminar.Location = New System.Drawing.Point(114, 395)
+        Me.BtnEliminar.Name = "BtnEliminar"
+        Me.BtnEliminar.Size = New System.Drawing.Size(120, 23)
+        Me.BtnEliminar.TabIndex = 6
+        Me.BtnEliminar.Text = "Eliminar"
+        Me.BtnEliminar.UseVisualStyleBackColor = True
+        '
+        'ChkSeleccionar
+        '
+        Me.ChkSeleccionar.AutoSize = True
+        Me.ChkSeleccionar.Location = New System.Drawing.Point(9, 399)
+        Me.ChkSeleccionar.Name = "ChkSeleccionar"
+        Me.ChkSeleccionar.Size = New System.Drawing.Size(82, 17)
+        Me.ChkSeleccionar.TabIndex = 5
+        Me.ChkSeleccionar.Text = "Seleccionar"
+        Me.ChkSeleccionar.UseVisualStyleBackColor = True
+        '
+        'BtnBuscar
+        '
+        Me.BtnBuscar.Location = New System.Drawing.Point(581, 5)
+        Me.BtnBuscar.Name = "BtnBuscar"
+        Me.BtnBuscar.Size = New System.Drawing.Size(204, 23)
+        Me.BtnBuscar.TabIndex = 4
+        Me.BtnBuscar.Text = "Buscar"
+        Me.BtnBuscar.UseVisualStyleBackColor = True
+        '
+        'TxtValor
+        '
+        Me.TxtValor.Location = New System.Drawing.Point(9, 7)
+        Me.TxtValor.Name = "TxtValor"
+        Me.TxtValor.Size = New System.Drawing.Size(552, 20)
+        Me.TxtValor.TabIndex = 3
+        '
+        'LblTotal
+        '
+        Me.LblTotal.AutoSize = True
+        Me.LblTotal.Location = New System.Drawing.Point(1042, 400)
+        Me.LblTotal.Name = "LblTotal"
+        Me.LblTotal.Size = New System.Drawing.Size(31, 13)
+        Me.LblTotal.TabIndex = 2
+        Me.LblTotal.Text = "Total"
+        '
+        'DgvListado
+        '
+        Me.DgvListado.AllowUserToAddRows = False
+        Me.DgvListado.AllowUserToDeleteRows = False
+        Me.DgvListado.AllowUserToOrderColumns = True
+        Me.DgvListado.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
+        Me.DgvListado.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.Seleccionar})
+        Me.DgvListado.Location = New System.Drawing.Point(6, 37)
+        Me.DgvListado.Name = "DgvListado"
+        Me.DgvListado.ReadOnly = True
+        Me.DgvListado.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
+        Me.DgvListado.Size = New System.Drawing.Size(1123, 355)
+        Me.DgvListado.TabIndex = 1
+        '
+        'Seleccionar
+        '
+        Me.Seleccionar.HeaderText = "Seleccionar"
+        Me.Seleccionar.Name = "Seleccionar"
+        Me.Seleccionar.ReadOnly = True
         '
         'TabPage2
         '
@@ -100,15 +181,6 @@ Partial Class FrmProveedores
         Me.TxtEmail.Size = New System.Drawing.Size(279, 20)
         Me.TxtEmail.TabIndex = 3
         '
-        'Label7
-        '
-        Me.Label7.AutoSize = True
-        Me.Label7.Location = New System.Drawing.Point(40, 297)
-        Me.Label7.Name = "Label7"
-        Me.Label7.Size = New System.Drawing.Size(45, 13)
-        Me.Label7.TabIndex = 0
-        Me.Label7.Text = "Email (*)"
-        '
         'CboTipoDocumento
         '
         Me.CboTipoDocumento.FormattingEnabled = True
@@ -118,6 +190,15 @@ Partial Class FrmProveedores
         Me.CboTipoDocumento.Size = New System.Drawing.Size(279, 21)
         Me.CboTipoDocumento.TabIndex = 21
         Me.CboTipoDocumento.Text = "INE"
+        '
+        'Label7
+        '
+        Me.Label7.AutoSize = True
+        Me.Label7.Location = New System.Drawing.Point(40, 297)
+        Me.Label7.Name = "Label7"
+        Me.Label7.Size = New System.Drawing.Size(45, 13)
+        Me.Label7.TabIndex = 0
+        Me.Label7.Text = "Email (*)"
         '
         'Label3
         '
@@ -228,117 +309,35 @@ Partial Class FrmProveedores
         Me.LblNombre.TabIndex = 0
         Me.LblNombre.Text = "Nombre (*)"
         '
-        'TabPage1
+        'ContextMenuStrip1
         '
-        Me.TabPage1.Controls.Add(Me.BtnEliminar)
-        Me.TabPage1.Controls.Add(Me.ChkSeleccionar)
-        Me.TabPage1.Controls.Add(Me.BtnBuscar)
-        Me.TabPage1.Controls.Add(Me.TxtValor)
-        Me.TabPage1.Controls.Add(Me.LblTotal)
-        Me.TabPage1.Controls.Add(Me.DgvListado)
-        Me.TabPage1.Location = New System.Drawing.Point(4, 22)
-        Me.TabPage1.Name = "TabPage1"
-        Me.TabPage1.Padding = New System.Windows.Forms.Padding(3)
-        Me.TabPage1.Size = New System.Drawing.Size(1135, 422)
-        Me.TabPage1.TabIndex = 0
-        Me.TabPage1.Text = "Listado"
-        Me.TabPage1.UseVisualStyleBackColor = True
+        Me.ContextMenuStrip1.Name = "ContextMenuStrip1"
+        Me.ContextMenuStrip1.Size = New System.Drawing.Size(61, 4)
         '
-        'BtnEliminar
+        'ErrorIcono
         '
-        Me.BtnEliminar.Location = New System.Drawing.Point(114, 395)
-        Me.BtnEliminar.Name = "BtnEliminar"
-        Me.BtnEliminar.Size = New System.Drawing.Size(120, 23)
-        Me.BtnEliminar.TabIndex = 6
-        Me.BtnEliminar.Text = "Eliminar"
-        Me.BtnEliminar.UseVisualStyleBackColor = True
+        Me.ErrorIcono.ContainerControl = Me
         '
-        'ChkSeleccionar
-        '
-        Me.ChkSeleccionar.AutoSize = True
-        Me.ChkSeleccionar.Location = New System.Drawing.Point(9, 399)
-        Me.ChkSeleccionar.Name = "ChkSeleccionar"
-        Me.ChkSeleccionar.Size = New System.Drawing.Size(82, 17)
-        Me.ChkSeleccionar.TabIndex = 5
-        Me.ChkSeleccionar.Text = "Seleccionar"
-        Me.ChkSeleccionar.UseVisualStyleBackColor = True
-        '
-        'BtnBuscar
-        '
-        Me.BtnBuscar.Location = New System.Drawing.Point(581, 5)
-        Me.BtnBuscar.Name = "BtnBuscar"
-        Me.BtnBuscar.Size = New System.Drawing.Size(204, 23)
-        Me.BtnBuscar.TabIndex = 4
-        Me.BtnBuscar.Text = "Buscar"
-        Me.BtnBuscar.UseVisualStyleBackColor = True
-        '
-        'TxtValor
-        '
-        Me.TxtValor.Location = New System.Drawing.Point(9, 7)
-        Me.TxtValor.Name = "TxtValor"
-        Me.TxtValor.Size = New System.Drawing.Size(552, 20)
-        Me.TxtValor.TabIndex = 3
-        '
-        'LblTotal
-        '
-        Me.LblTotal.AutoSize = True
-        Me.LblTotal.Location = New System.Drawing.Point(1042, 400)
-        Me.LblTotal.Name = "LblTotal"
-        Me.LblTotal.Size = New System.Drawing.Size(31, 13)
-        Me.LblTotal.TabIndex = 2
-        Me.LblTotal.Text = "Total"
-        '
-        'DgvListado
-        '
-        Me.DgvListado.AllowUserToAddRows = False
-        Me.DgvListado.AllowUserToDeleteRows = False
-        Me.DgvListado.AllowUserToOrderColumns = True
-        Me.DgvListado.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        Me.DgvListado.Columns.AddRange(New System.Windows.Forms.DataGridViewColumn() {Me.Seleccionar})
-        Me.DgvListado.Location = New System.Drawing.Point(6, 37)
-        Me.DgvListado.Name = "DgvListado"
-        Me.DgvListado.ReadOnly = True
-        Me.DgvListado.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect
-        Me.DgvListado.Size = New System.Drawing.Size(1123, 355)
-        Me.DgvListado.TabIndex = 1
-        '
-        'Seleccionar
-        '
-        Me.Seleccionar.HeaderText = "Seleccionar"
-        Me.Seleccionar.Name = "Seleccionar"
-        Me.Seleccionar.ReadOnly = True
-        '
-        'TabGeneral
-        '
-        Me.TabGeneral.Controls.Add(Me.TabPage1)
-        Me.TabGeneral.Controls.Add(Me.TabPage2)
-        Me.TabGeneral.Location = New System.Drawing.Point(2, 11)
-        Me.TabGeneral.Name = "TabGeneral"
-        Me.TabGeneral.SelectedIndex = 0
-        Me.TabGeneral.Size = New System.Drawing.Size(1143, 448)
-        Me.TabGeneral.TabIndex = 3
-        '
-        'FrmProveedores
+        'FrmCliente
         '
         Me.AutoScaleDimensions = New System.Drawing.SizeF(6.0!, 13.0!)
         Me.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font
         Me.BackColor = System.Drawing.Color.White
-        Me.ClientSize = New System.Drawing.Size(1157, 471)
+        Me.ClientSize = New System.Drawing.Size(1151, 454)
         Me.Controls.Add(Me.TabGeneral)
-        Me.Name = "FrmProveedores"
-        Me.Text = "Proveedores"
-        CType(Me.ErrorIcono, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.TabPage2.ResumeLayout(False)
-        Me.TabPage2.PerformLayout()
+        Me.Name = "FrmCliente"
+        Me.Text = "Cliente"
+        Me.TabGeneral.ResumeLayout(False)
         Me.TabPage1.ResumeLayout(False)
         Me.TabPage1.PerformLayout()
         CType(Me.DgvListado, System.ComponentModel.ISupportInitialize).EndInit()
-        Me.TabGeneral.ResumeLayout(False)
+        Me.TabPage2.ResumeLayout(False)
+        Me.TabPage2.PerformLayout()
+        CType(Me.ErrorIcono, System.ComponentModel.ISupportInitialize).EndInit()
         Me.ResumeLayout(False)
 
     End Sub
 
-    Friend WithEvents ErrorIcono As ErrorProvider
     Friend WithEvents TabGeneral As TabControl
     Friend WithEvents TabPage1 As TabPage
     Friend WithEvents BtnEliminar As Button
@@ -350,8 +349,8 @@ Partial Class FrmProveedores
     Friend WithEvents Seleccionar As DataGridViewCheckBoxColumn
     Friend WithEvents TabPage2 As TabPage
     Friend WithEvents TxtEmail As TextBox
-    Friend WithEvents Label7 As Label
     Friend WithEvents CboTipoDocumento As ComboBox
+    Friend WithEvents Label7 As Label
     Friend WithEvents Label3 As Label
     Friend WithEvents Label5 As Label
     Friend WithEvents Label4 As Label
@@ -366,4 +365,5 @@ Partial Class FrmProveedores
     Friend WithEvents LblTelefono As Label
     Friend WithEvents LblNombre As Label
     Friend WithEvents ContextMenuStrip1 As ContextMenuStrip
+    Friend WithEvents ErrorIcono As ErrorProvider
 End Class
