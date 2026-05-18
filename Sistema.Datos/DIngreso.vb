@@ -57,6 +57,25 @@ Public Class DIngreso
             Throw ex
         End Try
     End Sub
+    ' Consulta vw_ComprasDetalladas por rango de fechas (una fila por línea de detalle)
+    Public Function ConsultarDetallado(FechaInicio As Date, FechaFin As Date) As DataTable
+        Try
+            Dim Resultado As SqlDataReader
+            Dim Tabla As New DataTable
+            Dim Comando As New SqlCommand("sp_ConsultaComprasDetalladas", MyBase.conn)
+            Comando.CommandType = CommandType.StoredProcedure
+            Comando.Parameters.Add("@fechaInicio", SqlDbType.DateTime).Value = FechaInicio
+            Comando.Parameters.Add("@fechaFin", SqlDbType.DateTime).Value = FechaFin
+            MyBase.conn.Open()
+            Resultado = Comando.ExecuteReader()
+            Tabla.Load(Resultado)
+            MyBase.conn.Close()
+            Return Tabla
+        Catch ex As Exception
+            Throw ex
+        End Try
+    End Function
+
     Public Sub Insertar(Obj As Ingreso, Det As DataTable)
         Try
             ' Obj hace una instancia en la clase Ingreso

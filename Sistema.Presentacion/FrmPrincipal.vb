@@ -211,4 +211,28 @@ Public Class MDIParent1
         frm.MdiParent = Me
         frm.Show()
     End Sub
+
+    Private Sub VentasToolStripMenuItem1_Click(sender As Object, e As EventArgs) Handles VentasToolStripMenuItem1.Click
+        Dim frm As New FrmVenta
+        frm.MdiParent = Me
+        frm.Show()
+    End Sub
+
+    Private Sub ConsultaVentasToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConsultaVentasToolStripMenuItem.Click
+        Dim frm As New FrmConsultaVentas
+        frm.MdiParent = Me
+        frm.Show()
+    End Sub
+
+    Private Sub ConsultaComprasToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ConsultaComprasToolStripMenuItem.Click
+        Dim frm As New FrmConsultaCompras
+        frm.MdiParent = Me
+        frm.Show()
+    End Sub
+
+    Private Sub StockValorizadoToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles StockValorizadoToolStripMenuItem.Click
+        Dim frm As New FrmStockValorizado
+        frm.MdiParent = Me
+        frm.Show()
+    End Sub
 End Class

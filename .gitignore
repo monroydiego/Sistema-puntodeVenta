@@ -365,3 +365,11 @@ FodyWeavers.xsd
 # Claude Code agent files
 agent-dev-kit/
 .claude/
+
+# Sensitive files
+.env
+.env.*
+secrets.json
+*.key
+*.pem
+credentials.xml

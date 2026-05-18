@@ -1,23 +1,21 @@
 # CLAUDE.md — Memoria del Agente
 # Sistema Punto de Venta (POS) — VB.NET + SQL Server
 
-> Este archivo es la **capa de memoria** del agente. Debe leerse PRIMERO en cada sesión
-> antes de ejecutar cualquier tarea. Define el contexto completo, las reglas de trabajo,
-> el estado actual y las convenciones del proyecto.
+> Este archivo es la **capa de memoria** del agente. Debe leerse PRIMERO en cada sesión.
+> Define el contexto completo, reglas de trabajo, estado actual y convenciones del proyecto.
 
 ---
 
 ## 1. IDENTIDAD DEL PROYECTO
 
-| Campo              | Valor                                              |
-|--------------------|----------------------------------------------------|
-| Nombre             | Sistema Punto de Venta                             |
-| Tecnología UI      | VB.NET — Windows Forms (.NET Framework)            |
-| Base de Datos      | SQL Server (T-SQL)                                 |
-| IDE                | Visual Studio 2022                                 |
-| Arquitectura       | N-Tier (4 capas)                                   |
-| Estado             | ~75% completado                                    |
-| Propósito dual     | Uso real en negocio + Proyecto integrador académico|
+| Campo          | Valor                                               |
+|----------------|-----------------------------------------------------|
+| Nombre         | Sistema Punto de Venta                              |
+| Tecnología UI  | VB.NET — Windows Forms (.NET Framework 4.7.2)       |
+| Base de Datos  | SQL Server (T-SQL) — dbsistema                      |
+| IDE            | Visual Studio 2022                                  |
+| Arquitectura   | N-Tier (4 capas)                                    |
+| Propósito dual | Uso real en negocio + Proyecto integrador académico |
 
 ---
 
@@ -28,193 +26,300 @@ Sistema.sln
 ├── Sistema.Entidades        ← Clases POCO / Entidades de dominio
 ├── Sistema.Datos            ← Acceso a datos (ADO.NET + Stored Procedures)
 ├── Sistema.Negocio          ← Lógica de negocio / validaciones
-└── Sistema.Presentacion     ← WinForms UI (formularios, reportes RDLC)
+├── Sistema.Presentacion     ← WinForms UI (formularios)
+└── Sistema.Docs             ← Scripts SQL y Documentación (NO compila)
+    ├── DataBase/
+    │   ├── 03_StoredProcedures.sql
+    │   ├── 04_Triggers.sql
+    │   └── [pendientes: 02_Vistas, 05_SP_Cursor, 06_TRG_Ingreso]
+    └── Documentation/
+        ├── CLAUDE.md
+        ├── GUIA_SESION_VENTA.md
+        └── Especificacion_Requerimientos.md
 ```
 
-### Flujo de dependencias (NUNCA romper esto):
+### Flujo de dependencias — NUNCA romper:
 ```
 Presentacion → Negocio → Datos → Entidades
-     ↓              ↓        ↓
-  (Forms)      (BL clases) (DAL clases)
 ```
 
-### Regla crítica de arquitectura:
-- La capa **Presentacion** NUNCA llama directamente a **Datos**.
-- La capa **Datos** NUNCA contiene lógica de negocio.
-- Toda operación de BD se hace mediante **Stored Procedures** — cero SQL inline en capas superiores.
+### Reglas críticas de arquitectura:
+- Presentacion NUNCA llama directamente a Datos
+- Datos NUNCA contiene lógica de negocio
+- **CERO SQL inline en VB.NET** — solo `CommandType.StoredProcedure`
+- Toda operación de BD va en un Stored Procedure
 
 ---
 
-## 3. MÓDULOS DEL SISTEMA
+## 3. TABLAS DE LA BASE DE DATOS (dbsistema)
 
-### Módulo Almacén
-- **Categorías**: CRUD completo
-- **Artículos**: CRUD con código de barras, stock, precio, imagen, categoría
+```
+categoria        → idcategoria, nombre, descripcion, estado
+articulo         → idarticulo, idcategoria(FK), codigo, nombre, precio_venta,
+                   stock, imagen, descripcion, estado
+persona          → idpersona, tipo_persona('Cliente'|'Proveedor'), nombre,
+                   tipo_documento, num_documento, direccion, telefono, email
+rol              → idrol, nombre, descripcion
+usuario          → idusuario, idrol(FK), nombre, tipo_documento, num_documento,
+                   direccion, telefono, email, clave, estado
+ingreso          → idingreso, idusuario(FK), idpersona(FK), tipo_comprobante,
+                   serie_comprobante, num_comprobante, fecha, impuesto, total, estado
+detalle_ingreso  → iddetalle_ingreso, idingreso(FK), idarticulo(FK),
+                   cantidad, precio, importe
+venta            → idventa, idcliente(FK→persona.idpersona), idusuario(FK),
+                   tipo_comprobante, serie_comprobante, num_comprobante,
+                   fecha, impuesto, total, estado
+detalle_venta    → iddetalle_venta, idventa(FK), idarticulo(FK),
+                   cantidad, precio, descuento, subtotal
+```
 
-### Módulo Compras
-- **Proveedores**: CRUD (razón social, tipo doc, número doc, dirección, email, teléfono)
-- **Ingresos**: Maestro/Detalle — tipo comprobante, proveedor, impuesto, detalle por artículo
-  - Trigger: actualizar stock al insertar detalle
-  - Funcionalidad: Anular ingreso + restaurar stock
-  - Exportar PDF
-
-### Módulo Ventas
-- **Clientes**: CRUD (razón social, tipo doc, número doc, dirección, email, teléfono)
-- **Ventas**: Maestro/Detalle — tipo comprobante, cliente, impuesto, detalle por artículo
-  - Trigger: actualizar stock al insertar detalle
-  - Funcionalidad: Anular venta + restaurar stock
-  - Exportar PDF
-
-### Módulo Acceso
-- **Roles**: Administrador, Vendedor, Almacenero
-- **Usuarios**: CRUD con login y password encriptado (SHA256 o similar)
-
-### Módulo Consultas
-- Consulta de ventas entre dos fechas
-
-### Módulo Reportes
-- RDLC: Artículos, Comprobante de venta, Compras, Ventas
-- Exportar a PDF, Word, Excel
+> **CRÍTICO**: No existen tablas separadas de Cliente/Proveedor.
+> La tabla `persona` usa `tipo_persona` para diferenciarlos.
+> El tipo de comprobante es un VARCHAR directo (no tabla catálogo).
+> La entidad VB.NET para venta es `Venta` — no existe `EVenta`.
 
 ---
 
-## 4. ESTADO ACTUAL — PENDIENTES
+## 4. ESTADO ACTUAL DEL PROYECTO
 
-### En progreso (fase actual):
+### ✅ COMPLETADO:
+
 ```
-[COMPRAS]
-✅ Entidad Ingreso + DetalleIngreso
-✅ Stored Procedures CRUD básicos
-⏳ Trigger actualizar stock (INSERT en DetalleIngreso)
-⏳ Mostrar/Anular Ingreso
-⏳ Restaurar stock al anular
+Sistema.Entidades:
+  ✅ Categoria.vb
+  ✅ Articulo.vb
+  ✅ Persona.vb
+  ✅ Usuario.vb
+  ✅ Ingreso.vb
+  ✅ Venta.vb          (campos: idVenta, idCliente, idUsuario, tipo_comprobante,
+  ✅ DetalleVenta.vb    serie_comprobante, num_comprobante, fecha, impuesto, total, estado)
 
-[VENTAS]
-✅ Entidad Venta + DetalleVenta (EVenta.vb, EDetalleVenta.vb)
-✅ SP CRUD Ventas (03_StoredProcedures.sql — 6 SP)
-✅ Triggers TRG02 + TRG03 (04_Triggers.sql)
-✅ DAL DVenta.vb (Listar, BuscarPorFechas, ObtenerConDetalle, Anular, Actualizar, InsertarConDetalle)
-✅ BL NVenta.vb (validaciones stock, cliente, detalle vacío, calcular totales)
-⏳ Form: listado, búsqueda, selección clientes
-⏳ Form: agregar artículos, validar stock, calcular totales
-⏳ Insertar venta (UI)
-⏳ Mostrar/Anular venta (UI)
+Sistema.Datos:
+  ✅ Conexion.vb
+  ✅ DCategoria.vb
+  ✅ DArticulo.vb
+  ✅ DPersona.vb
+  ✅ DRol.vb
+  ✅ DUsuario.vb
+  ✅ DIngreso.vb
+  ✅ DVenta.vb
+
+Sistema.Negocio:
+  ✅ NCategoria.vb
+  ✅ NArticulo.vb
+  ✅ NPersona.vb
+  ✅ NRol.vb
+  ✅ NUsuario.vb
+  ✅ NIngreso.vb
+  ✅ NVenta.vb
+
+Sistema.Presentacion:
+  ✅ FrmLogin.vb
+  ✅ FrmPrincipal.vb (MDIParent1 — MDI con menú y roles)
+  ✅ FrmCategoria.vb
+  ✅ FrmArticulo.vb
+  ✅ FrmProveedores.vb
+  ✅ FrmProveedor_Ingreso.vb
+  ✅ FrmCliente.vb
+  ✅ FrmRol.vb
+  ✅ FrmUsuario.vb
+  ✅ FrmIngreso.vb
+  ✅ Variables.vb
+
+Sistema.Docs/_Database/:
+  ✅ 03_StoredProcedures.sql (sp_VentaInsertar, sp_VentaActualizar,
+                               sp_VentaAnular, sp_VentaListar,
+                               sp_DetalleVentaInsertar, sp_ObtenerVentaConDetalle)
+  ✅ 04_Triggers.sql         (TRG02: trg_Venta_DescontarStock,
+                               TRG03: trg_Venta_RestaurarStock)
+```
+
+### ❌ PENDIENTE — Lo que falta construir:
+
+```
+[CORRECCIONES A CÓDIGO EXISTENTE]
+⚠️  DVenta.vb → BuscarPorFechas usa SQL inline → reemplazar con sp_VentaBuscarPorFechas
+⚠️  NVenta.vb → referencia EVenta → cambiar a clase Venta (entidad correcta)
+
+[MÓDULO VENTAS — UI]
+❌ FrmVenta.vb + FrmVenta.Designer.vb
+   → Formulario maestro/detalle igual que FrmIngreso
+   → Listado de ventas + pestaña de nueva venta
+   → Selección de cliente (popup como FrmProveedor_Ingreso)
+   → Agregar artículos por código o búsqueda
+   → Cálculo de subtotales, impuesto, total
+   → Botón Anular venta (TRG03 restaura stock automáticamente)
+
+[OBJETOS BD — PROYECTO INTEGRADOR]
+❌ 02_Vistas.sql
+   → vw_VentasDetalladas  (JOIN: venta + persona + detalle_venta + articulo)
+   → vw_ComprasDetalladas (JOIN: ingreso + persona + detalle_ingreso + articulo)
+   → vw_StockValorizado   (JOIN: articulo + categoria + SUM/AVG)
+
+❌ 05_SP_Cursor.sql
+   → sp_ReporteVentasPorPeriodo (CURSOR, WHILE, IF/ELSE, TRY/CATCH)
+   → sp_InventarioValorizado    (CURSOR, WHILE, IF stock bajo, TRY/CATCH)
+
+❌ 06_TRG_Ingreso.sql
+   → trg_Ingreso_ActualizarStock (AFTER INSERT en detalle_ingreso)
+
+❌ sp_VentaBuscarPorFechas → agregar a 03_StoredProcedures.sql
+
+[MÓDULO CONSULTAS]
+❌ FrmConsultaVentas.vb — consulta por rango de fechas usando vw_VentasDetalladas
 
 [REPORTES]
-⏳ Extensión RDLC en VS
-⏳ Control ReportViewer
-⏳ Reporte artículos
-⏳ Reporte comprobante venta
-
-[CONSULTAS]
-⏳ Consulta ventas entre fechas
-
-[MEJORAS UI]
-⏳ Barra de herramientas formulario padre
+❌ RDLC: comprobante de venta, reporte artículos, reporte ventas
 
 [IMPLEMENTACIÓN FINAL]
-❌ Backup BD
+❌ Backup BD (.bak)
 ❌ Setup/Instalador
 ```
 
 ---
 
-## 5. OBJETOS DE BASE DE DATOS REQUERIDOS (Proyecto Integrador)
+## 5. OBJETOS BD REQUERIDOS — PROYECTO INTEGRADOR
 
-### Vistas — 3 mínimo (todas con JOIN + agregación + GROUP BY):
-| ID    | Nombre                    | Propósito                                          |
-|-------|---------------------------|----------------------------------------------------|
-| VW01  | vw_VentasDetalladas       | Ventas + cliente + artículos + totales por periodo |
-| VW02  | vw_ComprasDetalladas      | Ingresos + proveedor + artículos + costos          |
-| VW03  | vw_StockValorizado        | Stock actual + categoría + valor en almacén        |
+### Vistas (3 — JOIN + agregación + GROUP BY):
+| ID   | Nombre                 | Tablas                                         | Estado |
+|------|------------------------|------------------------------------------------|--------|
+| VW01 | vw_VentasDetalladas    | venta + persona + detalle_venta + articulo     | ❌     |
+| VW02 | vw_ComprasDetalladas   | ingreso + persona + detalle_ingreso + articulo | ❌     |
+| VW03 | vw_StockValorizado     | articulo + categoria                           | ❌     |
 
-### Triggers — 3 mínimo (INSERT, UPDATE, DELETE):
-| ID    | Nombre                          | Tabla           | Evento        | Tipo  |
-|-------|---------------------------------|-----------------|---------------|-------|
-| TRG01 | trg_Ingreso_ActualizarStock     | DetalleIngreso  | AFTER INSERT  | Stock ↑ |
-| TRG02 | trg_Venta_DescontarStock        | DetalleVenta    | AFTER INSERT  | Stock ↓ |
-| TRG03 | trg_Venta_RestaurarStock        | Venta           | AFTER UPDATE  | Anulación → Stock ↑ |
+### Triggers (3 mínimo):
+| ID    | Nombre                       | Tabla          | Evento       | Estado |
+|-------|------------------------------|----------------|--------------|--------|
+| TRG01 | trg_Ingreso_ActualizarStock  | detalle_ingreso | AFTER INSERT | ❌    |
+| TRG02 | trg_Venta_DescontarStock     | detalle_venta  | AFTER INSERT | ✅    |
+| TRG03 | trg_Venta_RestaurarStock     | venta          | AFTER UPDATE | ✅    |
 
-### Procedimientos Almacenados — 3 mínimo (2 con cursor):
-| ID    | Nombre                          | Cursor | Propósito                                    |
-|-------|---------------------------------|--------|----------------------------------------------|
-| SP01  | sp_ReporteVentasPorPeriodo      | ✅ Sí  | Itera ventas en rango, totales por cliente    |
-| SP02  | sp_InventarioValorizado         | ✅ Sí  | Itera artículos, stock mínimo, valor almacén  |
-| SP03  | sp_ObtenerVentaConDetalle       | ❌ No  | Retorna cabecera + detalle de una venta       |
-
----
-
-## 6. TABLAS DE LA BASE DE DATOS
-
-### Tablas principales (mínimo 4 requeridas — tenemos 12):
-```sql
-TipoDocumento    -- Catálogo: DNI, RUC, Pasaporte, etc.
-TipoComprobante  -- Catálogo: Boleta, Factura, Ticket
-Rol              -- Administrador, Vendedor, Almacenero
-Categoria        -- Clasificación de artículos
-Usuario          -- Acceso al sistema (login + password SHA256)
-Proveedor        -- Datos del proveedor
-Cliente          -- Datos del cliente
-Articulo         -- Inventario (FK: Categoria)
-Ingreso          -- Cabecera compra (FK: Proveedor, TipoComprobante)
-DetalleIngreso   -- Líneas de compra (FK: Ingreso, Articulo)
-Venta            -- Cabecera venta (FK: Cliente, TipoComprobante, Usuario)
-DetalleVenta     -- Líneas de venta (FK: Venta, Articulo)
-```
+### Stored Procedures con cursor (2 mínimo):
+| ID   | Nombre                      | Cursor | Estado |
+|------|-----------------------------|--------|--------|
+| SP01 | sp_ReporteVentasPorPeriodo  | ✅ Sí  | ❌     |
+| SP02 | sp_InventarioValorizado     | ✅ Sí  | ❌     |
 
 ---
 
-## 7. CONVENCIONES DE NOMENCLATURA
+## 6. CONVENCIONES DE NOMENCLATURA
 
-### SQL Server:
+### SQL Server (dbsistema):
 ```
-Tablas:            PascalCase singular        → Articulo, DetalleVenta
-Stored Procedures: sp_ + Entidad + Acción     → sp_ArticuloInsertar
-Triggers:          trg_ + Tabla + Evento      → trg_Venta_DescontarStock
-Vistas:            vw_ + Nombre               → vw_VentasDetalladas
-Columnas PK:       id + Tabla                 → idArticulo
-Columnas FK:       id + TablaReferenciada     → idCategoria
-Columnas estado:   estado (BIT o VARCHAR)
+Tablas:     snake_case singular          → articulo, detalle_venta, persona
+SPs:        sp_ + Entidad + Accion       → sp_VentaInsertar, sp_VentaAnular
+Triggers:   trg_ + Tabla + Evento       → trg_Venta_DescontarStock
+Vistas:     vw_ + Nombre                → vw_VentasDetalladas
+PKs:        id + tabla                  → idventa, idarticulo
+FKs:        id + tablaReferenciada      → idcliente, idusuario
 ```
 
 ### VB.NET:
 ```
-Clases Entidad:    E + Nombre                 → EArticulo
-Clases DAL:        D + Nombre                 → DArticulo
-Clases BL:         N + Nombre                 → NArticulo (Negocio)
-Formularios:       Frm + Nombre               → FrmArticulo
-```
-
-### Parámetros SP:
-```
-Todos los parámetros llevan @ y coinciden exactamente con el nombre de la columna
-Ejemplo: @idArticulo, @nombre, @stock, @precio
+Entidades:  sin prefijo                  → Venta, Articulo, Persona
+DAL:        D + Nombre                   → DVenta, DArticulo
+BL:         N + Nombre                   → NVenta, NArticulo
+Forms:      Frm + Nombre                 → FrmVenta, FrmArticulo
+Globales:   clase Variables.vb           → Variables.IdUsuario, Variables.IdProveedor
 ```
 
 ---
 
-## 8. PATRONES DE CÓDIGO OBLIGATORIOS
+## 7. PATRONES DE CÓDIGO OBLIGATORIOS
 
-### DAL — Patrón estándar de conexión:
+### DAL — Consulta (ExecuteReader):
 ```vb
-Public Function NombreMetodo(param As Tipo) As TipoRetorno
-    Dim objConexion As New Conexion()
-    Dim cmd As New SqlCommand()
+Public Function NombreMetodo(Param As Tipo) As DataTable
     Try
-        cmd.Connection = objConexion.AbrirConexion()
-        cmd.CommandType = CommandType.StoredProcedure
-        cmd.CommandText = "sp_NombreProcedimiento"
-        cmd.Parameters.AddWithValue("@param", param)
-        ' ... ejecutar ...
+        Dim Resultado As SqlDataReader
+        Dim Tabla As New DataTable
+        Dim Comando As New SqlCommand("sp_NombreProcedimiento", MyBase.conn)
+        Comando.CommandType = CommandType.StoredProcedure
+        Comando.Parameters.Add("@param", SqlDbType.Tipo).Value = Param
+        MyBase.conn.Open()
+        Resultado = Comando.ExecuteReader()
+        Tabla.Load(Resultado)
+        MyBase.conn.Close()
+        Return Tabla
     Catch ex As Exception
         Throw ex
-    Finally
-        objConexion.CerrarConexion()
     End Try
 End Function
 ```
 
-### SP — Plantilla estándar con manejo de errores:
+### DAL — Escritura (ExecuteNonQuery):
+```vb
+Public Sub NombreMetodo(Obj As Entidad)
+    Try
+        Dim Comando As New SqlCommand("sp_NombreProcedimiento", MyBase.conn)
+        Comando.CommandType = CommandType.StoredProcedure
+        Comando.Parameters.Add("@campo", SqlDbType.Tipo).Value = Obj.Campo
+        MyBase.conn.Open()
+        Comando.ExecuteNonQuery()
+        MyBase.conn.Close()
+    Catch ex As Exception
+        Throw ex
+    End Try
+End Sub
+```
+
+### DAL — Con OUTPUT (para obtener ID generado):
+```vb
+Dim ParamId As New SqlParameter("@idventa", SqlDbType.Int)
+ParamId.Direction = ParameterDirection.Output
+Comando.Parameters.Add(ParamId)
+Comando.ExecuteNonQuery()
+Dim NuevoId As Integer = Convert.ToInt32(ParamId.Value)
+```
+
+### DAL — Transacción explícita con detalle:
+```vb
+Public Sub InsertarConDetalle(Obj As Venta, Det As DataTable)
+    Dim Trx As SqlTransaction = Nothing
+    Try
+        MyBase.conn.Open()
+        Trx = MyBase.conn.BeginTransaction()
+        ' 1. Insertar cabecera con SP + OUTPUT
+        ' 2. Para cada fila de Det → sp_DetalleVentaInsertar
+        Trx.Commit()
+        MyBase.conn.Close()
+    Catch ex As Exception
+        If Trx IsNot Nothing Then Trx.Rollback()
+        MyBase.conn.Close()
+        Throw ex
+    End Try
+End Sub
+```
+
+### BL — Estándar:
+```vb
+Public Function NombreMetodo(Param As Tipo) As DataTable
+    Try
+        Dim Datos As New DNombreDAL
+        Return Datos.NombreMetodo(Param)
+    Catch ex As Exception
+        MsgBox(ex.Message)
+        Return Nothing
+    End Try
+End Function
+```
+
+### Form — Cargar listado:
+```vb
+Private Sub Listar()
+    Try
+        Dim Neg As New Negocio.NNombre
+        DgvListado.DataSource = Neg.Listar()
+        LblTotal.Text = "Total Registros: " & DgvListado.DataSource.Rows.Count.ToString()
+        Me.Formato()
+        Me.Limpiar()
+    Catch ex As Exception
+        MsgBox(ex.Message)
+    End Try
+End Sub
+```
+
+### SP — Plantilla estándar con TRY/CATCH:
 ```sql
 CREATE OR ALTER PROCEDURE sp_NombreProcedimiento
     @param1 TIPO,
@@ -228,44 +333,65 @@ BEGIN
         COMMIT TRANSACTION;
     END TRY
     BEGIN CATCH
-        ROLLBACK TRANSACTION;
-        THROW;
+        IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION;
+        DECLARE @msg NVARCHAR(4000) = ERROR_MESSAGE();
+        RAISERROR(@msg, 16, 1);
     END CATCH
 END
+GO
 ```
+
+### SP con CURSOR — Plantilla:
+```sql
+DECLARE cur CURSOR FOR
+    SELECT ... FROM ...;
+OPEN cur;
+FETCH NEXT FROM cur INTO @var1, @var2;
+WHILE @@FETCH_STATUS = 0
+BEGIN
+    -- lógica por fila
+    FETCH NEXT FROM cur INTO @var1, @var2;
+END;
+CLOSE cur;
+DEALLOCATE cur;
+```
+
+---
+
+## 8. CONTEXTO ACADÉMICO — PROYECTO INTEGRADOR
+
+**Materia:** Bases de Datos y Lenguajes
+**Restricción crítica:** Los objetos de BD (SP, triggers, vistas) se ejecutan DESDE
+la aplicación VB.NET, NO directamente desde SSMS.
+
+**Rubrica de evaluación:**
+| Sección                                      | Puntos |
+|----------------------------------------------|--------|
+| Introducción                                 | 2      |
+| Especificación de requerimientos             | 3      |
+| Diseño ER + modelos                          | 10     |
+| Implementación (SPs + triggers + vistas)     | 55     |
+| Pruebas + Normalización 3FN                  | 25     |
+| Conclusiones + Referencias                   | 5      |
+| **Total**                                    | **100**|
+
+Ponderación: 70% documento + 30% exposición oral
 
 ---
 
 ## 9. REGLAS DEL AGENTE
 
-1. **Siempre leer este archivo primero** antes de cualquier tarea.
-2. **Consultar el skill relevante** antes de generar código (ver `/skills/`).
-3. **No romper la arquitectura N-Tier** — respetar el flujo de dependencias.
-4. **Todo SQL va en SQL Server** — nunca SQL inline en VB.NET.
-5. **Nombrar archivos según convención** — no inventar nombres propios.
-6. **Completar un módulo antes de pasar al siguiente** — no dejar código huérfano.
-7. **Documentar cada objeto de BD** — comentarios en SP, triggers y vistas.
-8. **Validar siempre en dos capas**: Negocio (BL) y Base de Datos (constraints/triggers).
-9. **Referenciar el estado en CLAUDE.md** — actualizar ✅ cuando un ítem se complete.
-10. **Preguntar antes de refactorizar** código existente que funciona.
+1. **Leer este archivo primero** antes de cualquier tarea
+2. **No romper arquitectura** — flujo: Presentacion→Negocio→Datos→Entidades
+3. **CERO SQL inline** — siempre `CommandType.StoredProcedure`
+4. **Entidad correcta: `Venta`** — no existe `EVenta` en el proyecto
+5. **`persona` para clientes Y proveedores** — no existen tablas Cliente/Proveedor
+6. **Convenciones de nomenclatura** — snake_case BD, PascalCase VB
+7. **Un módulo a la vez** — completar antes de pasar al siguiente
+8. **Comentarios académicos** en objetos BD — propósito, estructuras de control usadas
+9. **Preguntar antes de refactorizar** código existente que funciona
+10. **Actualizar este CLAUDE.md** al completar cada ítem (cambiar ❌ por ✅)
 
 ---
 
-## 10. CONTEXTO ACADÉMICO (Proyecto Integrador)
-
-Materia: Bases de Datos y Lenguajes
-Evaluación del integrador:
-- Introducción [2 pts]
-- Especificación de requerimientos [3 pts]
-- Especificación de diseños — ER + modelos [10 pts]
-- Implementación: 2 SP con cursor + 1 SP + 3 triggers + 3 vistas [55 pts]
-- Pruebas de software + Normalización hasta 3FN [25 pts]
-- Conclusiones [3 pts] + Referencias [2 pts]
-- × 70% documento + 30% exposición oral
-
-**Restricción importante**: Los objetos de BD (SP, triggers, vistas) se ejecutan
-DESDE la aplicación, NO directamente desde el gestor de BD.
-
----
-
-*Última actualización: Mayo 2026 — Inicio de desarrollo con Claude Code*
+*Última actualización: 2026-05-17 — Estado real documentado, listo para FrmVenta + Objetos BD integrador*

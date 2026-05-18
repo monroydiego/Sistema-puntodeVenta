@@ -94,6 +94,24 @@
     <Compile Include="FrmCliente.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="FrmCliente_Venta.Designer.vb">
+      <DependentUpon>FrmCliente_Venta.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FrmCliente_Venta.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmConsultaCompras.Designer.vb">
+      <DependentUpon>FrmConsultaCompras.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FrmConsultaCompras.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmConsultaVentas.Designer.vb">
+      <DependentUpon>FrmConsultaVentas.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FrmConsultaVentas.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="FrmIngreso.Designer.vb">
       <DependentUpon>FrmIngreso.vb</DependentUpon>
     </Compile>
@@ -130,10 +148,22 @@
     <Compile Include="FrmRol.vb">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="FrmStockValorizado.Designer.vb">
+      <DependentUpon>FrmStockValorizado.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FrmStockValorizado.vb">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="FrmUsuario.Designer.vb">
       <DependentUpon>FrmUsuario.vb</DependentUpon>
     </Compile>
     <Compile Include="FrmUsuario.vb">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FrmVenta.Designer.vb">
+      <DependentUpon>FrmVenta.vb</DependentUpon>
+    </Compile>
+    <Compile Include="FrmVenta.vb">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="My Project\AssemblyInfo.vb" />

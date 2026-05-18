@@ -26,6 +26,16 @@ Public Class NArticulo
             Return Nothing
         End Try
     End Function
+    Public Function ConsultarStockValorizado() As DataTable
+        Try
+            Dim Datos As New DArticulo
+            Return Datos.ConsultarStockValorizado()
+        Catch ex As Exception
+            MsgBox(ex.Message)
+            Return Nothing
+        End Try
+    End Function
+
     Public Function BuscarCodigo(Valor As String) As Articulo
         Try
             Dim Datos As New DArticulo ' Creamos una instancia de la clase DCategoria 

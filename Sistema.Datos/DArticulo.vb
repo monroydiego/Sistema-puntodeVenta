@@ -71,6 +71,23 @@ Public Class DArticulo
         End Try
     End Function
 
+    ' Consulta vw_StockValorizado — snapshot actual del inventario
+    Public Function ConsultarStockValorizado() As DataTable
+        Try
+            Dim Resultado As SqlDataReader
+            Dim Tabla As New DataTable
+            Dim Comando As New SqlCommand("sp_ConsultaStockValorizado", MyBase.conn)
+            Comando.CommandType = CommandType.StoredProcedure
+            MyBase.conn.Open()
+            Resultado = Comando.ExecuteReader()
+            Tabla.Load(Resultado)
+            MyBase.conn.Close()
+            Return Tabla
+        Catch ex As Exception
+            Throw ex
+        End Try
+    End Function
+
     ' Metodo para insertar una categoria
     Public Sub Insertar(Obj As Articulo)
         Try

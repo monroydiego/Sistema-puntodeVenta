@@ -40,6 +40,8 @@ Partial Class MDIParent1
         Me.UsuariosToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.MnuConsultas = New System.Windows.Forms.ToolStripMenuItem()
         Me.ConsultaVentasToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ConsultaComprasToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.StockValorizadoToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ViewMenu = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolBarToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusBarToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -162,7 +164,7 @@ Partial Class MDIParent1
         '
         'MnuConsultas
         '
-        Me.MnuConsultas.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ConsultaVentasToolStripMenuItem})
+        Me.MnuConsultas.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ConsultaVentasToolStripMenuItem, Me.ConsultaComprasToolStripMenuItem, Me.StockValorizadoToolStripMenuItem})
         Me.MnuConsultas.Name = "MnuConsultas"
         Me.MnuConsultas.Size = New System.Drawing.Size(71, 20)
         Me.MnuConsultas.Text = "Consultas"
@@ -170,8 +172,20 @@ Partial Class MDIParent1
         'ConsultaVentasToolStripMenuItem
         '
         Me.ConsultaVentasToolStripMenuItem.Name = "ConsultaVentasToolStripMenuItem"
-        Me.ConsultaVentasToolStripMenuItem.Size = New System.Drawing.Size(180, 22)
+        Me.ConsultaVentasToolStripMenuItem.Size = New System.Drawing.Size(200, 22)
         Me.ConsultaVentasToolStripMenuItem.Text = "Consulta Ventas"
+        '
+        'ConsultaComprasToolStripMenuItem
+        '
+        Me.ConsultaComprasToolStripMenuItem.Name = "ConsultaComprasToolStripMenuItem"
+        Me.ConsultaComprasToolStripMenuItem.Size = New System.Drawing.Size(200, 22)
+        Me.ConsultaComprasToolStripMenuItem.Text = "Consulta Compras"
+        '
+        'StockValorizadoToolStripMenuItem
+        '
+        Me.StockValorizadoToolStripMenuItem.Name = "StockValorizadoToolStripMenuItem"
+        Me.StockValorizadoToolStripMenuItem.Size = New System.Drawing.Size(200, 22)
+        Me.StockValorizadoToolStripMenuItem.Text = "Stock Valorizado"
         '
         'ViewMenu
         '
@@ -442,5 +456,7 @@ Partial Class MDIParent1
     Friend WithEvents UsuariosToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents MnuConsultas As ToolStripMenuItem
     Friend WithEvents ConsultaVentasToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ConsultaComprasToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents StockValorizadoToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents MnuSalir As ToolStripMenuItem
 End Class

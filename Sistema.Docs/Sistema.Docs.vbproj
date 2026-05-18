@@ -30,6 +30,7 @@
     <None Include="Documentation\CLAUDE.md" />
     <None Include="Documentation\Especificacion_Requerimientos.md" />
     <None Include="Documentation\GUIA_CLAUDE_CODE.md" />
+    <None Include="Documentation\GUIA_SESION_VENTA.md" />
     <None Include="Documentation\README.md" />
   </ItemGroup>
   <ItemGroup>

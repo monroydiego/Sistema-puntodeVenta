@@ -26,7 +26,20 @@ Public Class NIngreso
             Return Nothing
         End Try
     End Function
-    Public Function Insertar(Obj As Ingreso, Det As DataTable) As Boolean ' Si logramos insertar devolvemos un True o sino un False 
+    Public Function ConsultarDetallado(FechaInicio As Date, FechaFin As Date) As DataTable
+        Try
+            If FechaInicio > FechaFin Then
+                Throw New Exception("La fecha de inicio no puede ser mayor a la fecha fin.")
+            End If
+            Dim Datos As New DIngreso
+            Return Datos.ConsultarDetallado(FechaInicio, FechaFin)
+        Catch ex As Exception
+            MsgBox(ex.Message)
+            Return Nothing
+        End Try
+    End Function
+
+    Public Function Insertar(Obj As Ingreso, Det As DataTable) As Boolean ' Si logramos insertar devolvemos un True o sino un False
         Try ' Si logramos Insertar devolvemos un True 
             Dim Datos As New DIngreso
             Datos.Insertar(Obj, Det) ' Llamamos el metodo Insertar de la clase de la capa datos

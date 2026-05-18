@@ -217,11 +217,16 @@
 
     Private Sub DgvArticulos_CellDoubleClick(sender As Object, e As DataGridViewCellEventArgs) Handles DgvArticulos.CellDoubleClick
         Try
+            If e.RowIndex < 0 Then Return
+
+            ' Acceso por fila + índice (no SelectedCells — independiente del SelectionMode)
+            ' Col 0=idarticulo(oculta), 1=idcategoria(oculta), 2=categoria, 3=codigo, 4=nombre, 5=precio_venta
+            Dim Fila As DataGridViewRow = DgvArticulos.Rows(e.RowIndex)
             Dim Obj As New Entidades.Articulo
-            Obj.IdArticulo = DgvArticulos.SelectedCells.Item(0).Value
-            Obj.Codigo = DgvArticulos.SelectedCells.Item(3).Value
-            Obj.Nombre = DgvArticulos.SelectedCells.Item(4).Value
-            Obj.PrecioVenta = DgvArticulos.SelectedCells.Item(5).Value
+            Obj.IdArticulo = Fila.Cells(0).Value
+            Obj.Codigo = Fila.Cells(3).Value
+            Obj.Nombre = Fila.Cells(4).Value
+            Obj.PrecioVenta = Fila.Cells(5).Value
             Me.AgregarDetalle(Obj)
         Catch ex As Exception
             MsgBox(ex.Message)
@@ -259,8 +264,9 @@
                 If (Neg.Insertar(Obj, DtDetalle)) Then
                     MsgBox("Se ha registrado corectamente", vbOKOnly + vbInformation, "Registro correcto")
                     Me.Listar()
+                Else
+                    MsgBox("No se ha podido registrar el ingreso", vbOKOnly + vbCritical, "Registro incorrecto")
                 End If
-                MsgBox("No se ha podido registrar el ingreso", vbOKOnly + vbCritical, "Registro incorrecto")
             Else
                 MsgBox("Ingrese los datos Obligatorios, al menos agregue un detalle", vbOKOnly + vbCritical, "Faltan datos")
             End If

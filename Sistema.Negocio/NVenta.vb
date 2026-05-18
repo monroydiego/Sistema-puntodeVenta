@@ -8,13 +8,14 @@ Public Class NVenta
         Return (Precio - Descuento) * Cantidad
     End Function
 
-    ' Calcula el total de la venta: suma de subtotales * (1 + impuesto/100)
+    ' Calcula el total de la venta: suma de subtotales * (1 + impuesto)
+    ' Bug #4 fix: impuesto ya es decimal (ej: 0.16), no dividir por 100
     Public Function CalcularTotal(Det As DataTable, Impuesto As Decimal) As Decimal
         Dim Subtotal As Decimal = 0
         For Each Fila As DataRow In Det.Rows
             Subtotal += Convert.ToDecimal(Fila("subtotal"))
         Next
-        Return Subtotal * (1 + Impuesto / 100)
+        Return Subtotal * (1 + Impuesto)
     End Function
 
     ' Lista todas las ventas activas
@@ -22,6 +23,20 @@ Public Class NVenta
         Try
             Dim Datos As New DVenta
             Return Datos.Listar()
+        Catch ex As Exception
+            MsgBox(ex.Message)
+            Return Nothing
+        End Try
+    End Function
+
+    ' Consulta vw_VentasDetalladas por rango de fechas (detalle por línea de artículo)
+    Public Function ConsultarDetallado(FechaInicio As Date, FechaFin As Date) As DataTable
+        Try
+            If FechaInicio > FechaFin Then
+                Throw New Exception("La fecha de inicio no puede ser mayor a la fecha fin.")
+            End If
+            Dim Datos As New DVenta
+            Return Datos.ConsultarDetallado(FechaInicio, FechaFin)
         Catch ex As Exception
             MsgBox(ex.Message)
             Return Nothing
@@ -66,7 +81,7 @@ Public Class NVenta
     End Function
 
     ' Inserta cabecera + detalle con validaciones de negocio
-    Public Function Insertar(Obj As EVenta, Det As DataTable) As Boolean
+    Public Function Insertar(Obj As Venta, Det As DataTable) As Boolean
         Try
             ' Validar cliente seleccionado
             If Obj.IdCliente <= 0 Then
@@ -78,22 +93,9 @@ Public Class NVenta
                 Throw New Exception("Debe agregar al menos un artículo a la venta.")
             End If
 
-            ' Validar stock suficiente para cada artículo ANTES de insertar
-            Dim DatosArt As New DArticulo
-            For Each Fila As DataRow In Det.Rows
-                Dim IdArt As Integer = Convert.ToInt32(Fila("idArticulo"))
-                Dim Cant As Integer = Convert.ToInt32(Fila("cantidad"))
-                Dim TablaArt As DataTable = DatosArt.Listar()
-                Dim Filas() As DataRow = TablaArt.Select("idArticulo = " & IdArt)
-                If Filas.Length > 0 Then
-                    Dim StockDisponible As Integer = Convert.ToInt32(Filas(0)("stock"))
-                    If Cant > StockDisponible Then
-                        Throw New Exception("Stock insuficiente para el artículo: " &
-                                            Filas(0)("nombre").ToString() &
-                                            ". Disponible: " & StockDisponible)
-                    End If
-                End If
-            Next
+            ' La validación de stock la realiza TRG02 en la BD (trg_Venta_DescontarStock).
+            ' Si el stock es insuficiente, el trigger hace ROLLBACK y lanza el error
+            ' que sube por DVenta.InsertarConDetalle hasta este catch → MsgBox.
 
             Dim Datos As New DVenta
             Datos.InsertarConDetalle(Obj, Det)
@@ -105,7 +107,7 @@ Public Class NVenta
     End Function
 
     ' Actualiza datos de la cabecera
-    Public Function Actualizar(Obj As EVenta) As Boolean
+    Public Function Actualizar(Obj As Venta) As Boolean
         Try
             If Obj.IdVenta <= 0 Then
                 Throw New Exception("ID de venta inválido.")

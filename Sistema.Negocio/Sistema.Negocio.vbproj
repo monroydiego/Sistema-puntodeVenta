@@ -85,6 +85,7 @@
     <Compile Include="NPersona.vb" />
     <Compile Include="NRol.vb" />
     <Compile Include="NUsuario.vb" />
+    <Compile Include="NVenta.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">

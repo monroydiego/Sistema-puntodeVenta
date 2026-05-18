@@ -21,15 +21,13 @@ Public Class DVenta
         End Try
     End Function
 
-    ' Busca ventas por rango de fechas consultando la vista vw_VentasDetalladas
+    ' Busca ventas por rango de fechas usando sp_VentaBuscarPorFechas
     Public Function BuscarPorFechas(FechaInicio As Date, FechaFin As Date) As DataTable
         Try
             Dim Resultado As SqlDataReader
             Dim Tabla As New DataTable
-            Dim Comando As New SqlCommand(
-                "SELECT * FROM vw_VentasDetalladas WHERE fechaVenta BETWEEN @fechaInicio AND @fechaFin",
-                MyBase.conn)
-            Comando.CommandType = CommandType.Text
+            Dim Comando As New SqlCommand("sp_VentaBuscarPorFechas", MyBase.conn)
+            Comando.CommandType = CommandType.StoredProcedure
             Comando.Parameters.Add("@fechaInicio", SqlDbType.DateTime).Value = FechaInicio
             Comando.Parameters.Add("@fechaFin", SqlDbType.DateTime).Value = FechaFin
             MyBase.conn.Open()
@@ -92,6 +90,25 @@ Public Class DVenta
         End Try
     End Sub
 
+    ' Consulta vw_VentasDetalladas por rango de fechas (una fila por línea de detalle)
+    Public Function ConsultarDetallado(FechaInicio As Date, FechaFin As Date) As DataTable
+        Try
+            Dim Resultado As SqlDataReader
+            Dim Tabla As New DataTable
+            Dim Comando As New SqlCommand("sp_ConsultaVentasDetalladas", MyBase.conn)
+            Comando.CommandType = CommandType.StoredProcedure
+            Comando.Parameters.Add("@fechaInicio", SqlDbType.DateTime).Value = FechaInicio
+            Comando.Parameters.Add("@fechaFin", SqlDbType.DateTime).Value = FechaFin
+            MyBase.conn.Open()
+            Resultado = Comando.ExecuteReader()
+            Tabla.Load(Resultado)
+            MyBase.conn.Close()
+            Return Tabla
+        Catch ex As Exception
+            Throw ex
+        End Try
+    End Function
+
     ' Inserta cabecera + detalle en una sola transacción explícita.
     ' Cada fila de Det requiere columnas: idArticulo, cantidad, precio, descuento, subtotal
     ' TRG02 descuenta stock al insertar cada línea de DetalleVenta.
@@ -118,11 +135,12 @@ Public Class DVenta
             Dim NuevoId As Integer = Convert.ToInt32(ParamId.Value)
 
             ' 2. Insertar cada línea de detalle (TRG02 descuenta stock por línea)
+            ' Bug #2 fix: columna se llama "idarticulo" (minúsculas) en DtDetalle
             For Each Fila As DataRow In Det.Rows
                 Dim CmdDet As New SqlCommand("sp_DetalleVentaInsertar", MyBase.conn, Trx)
                 CmdDet.CommandType = CommandType.StoredProcedure
                 CmdDet.Parameters.Add("@idVenta", SqlDbType.Int).Value = NuevoId
-                CmdDet.Parameters.Add("@idArticulo", SqlDbType.Int).Value = Convert.ToInt32(Fila("idArticulo"))
+                CmdDet.Parameters.Add("@idArticulo", SqlDbType.Int).Value = Convert.ToInt32(Fila("idarticulo"))
                 CmdDet.Parameters.Add("@cantidad", SqlDbType.Int).Value = Convert.ToInt32(Fila("cantidad"))
                 CmdDet.Parameters.Add("@precio", SqlDbType.Decimal).Value = Convert.ToDecimal(Fila("precio"))
                 CmdDet.Parameters.Add("@descuento", SqlDbType.Decimal).Value = Convert.ToDecimal(Fila("descuento"))
