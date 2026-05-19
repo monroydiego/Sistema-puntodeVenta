@@ -11,11 +11,11 @@ Agente: AGENTE_PRUEBAS.md v1.0
 
 | Categoría            | Total |
 |----------------------|-------|
-| Bugs CRÍTICOS        | 2     |
-| Bugs ALTOS           | 3     |
+| Bugs CRÍTICOS        | 3     |
+| Bugs ALTOS           | 4     |
 | Bugs MEDIOS          | 1     |
 | Bugs BAJOS           | 1     |
-| **Total bugs**       | **7** |
+| **Total bugs**       | **9** |
 | Pruebas generadas    | 16    |
 | Pruebas con script   | 11    |
 
@@ -819,42 +819,70 @@ VALUES (V, W, 10, 25.00);
 
 ---
 
+---
+
+### 🔴 NUEVO-BUG-01 — DIngreso.vb: SqlDbType.Structured sin TABLE TYPE en BD
+
+- Archivo: `Sistema.Datos/DIngreso.vb` (línea 97, antes del fix)
+- Descripción: El método `Insertar` enviaba el detalle como TVP (`SqlDbType.Structured`) al SP `ingreso_insertar`. Esto requería un USER-DEFINED TABLE TYPE en SQL Server que no existía en el repositorio. Causaba error en runtime al registrar cualquier ingreso.
+- Impacto: Todos los registros de compras fallaban con error de tipo de tabla inválido.
+- Estado: ✅ **CORREGIDO** — Se reescribió `DIngreso.Insertar` con transacción explícita fila a fila (igual que `DVenta.InsertarConDetalle`). Se creó `07_SP_Ingreso.sql` con `sp_IngresoInsertar` (OUTPUT) + `sp_DetalleIngresoInsertar`. TRG01 se sigue disparando automáticamente.
+
+---
+
+### 🟠 NUEVO-BUG-02 — FrmVenta.BtnAnular: Usa CurrentRow en lugar del checkbox
+
+- Archivo: `Sistema.Presentacion/FrmVenta.vb` (línea 332, antes del fix)
+- Descripción: `BtnAnular_Click` usaba `DgvListado.CurrentRow` para obtener el ID de la venta a anular. CurrentRow es la última fila donde el usuario hizo clic, que puede diferir de la fila con el checkbox "Seleccionar" activado. Riesgo de anular la venta incorrecta.
+- Impacto: El usuario podría anular una venta equivocada sin saberlo.
+- Estado: ✅ **CORREGIDO** — Se reemplazó CurrentRow por iteración sobre las filas buscando la que tiene `Seleccionar = True`. Si ninguna está marcada, muestra mensaje orientativo.
+
+---
+
+### 🟡 NUEVO-BUG-03 — FrmIngreso.DtDetalle: Columna `importe` no existe en `detalle_ingreso`
+
+- Archivo: `Sistema.Presentacion/FrmIngreso.vb` (línea 82)
+- Descripción: El DtDetalle en FrmIngreso agrega columna `importe` en memoria. Al pasar como TVP, la columna extra causaría rechazo si el TABLE TYPE en BD no la tenía. El campo `importe` no existe en la tabla `detalle_ingreso` de la BD (confirmado por ScriptSalida.md).
+- Impacto: Subsumido por NUEVO-BUG-01. El fix de la capa DAL resuelve esto automáticamente, ya que DIngreso.Insertar ahora solo lee columnas `idarticulo`, `cantidad`, `precio` del DataTable, ignorando `importe`.
+- Estado: ✅ **RESUELTO** por fix de NUEVO-BUG-01.
+
+---
+
 ## SECCIÓN 4 — ESTADO FINAL
 
 | Archivo analizado                           | Bugs encontrados | Revisado |
 |---------------------------------------------|------------------|----------|
 | Sistema.Datos/Conexion.vb                   | 0                | [x]      |
-| Sistema.Datos/DVenta.vb                     | 0 (fixes previos OK) | [x]  |
-| Sistema.Datos/DIngreso.vb                   | 1 (BUG-TVP — pendiente verificar SP ingreso_insertar) | [x] |
+| Sistema.Datos/DVenta.vb                     | 0                | [x]      |
+| Sistema.Datos/DIngreso.vb                   | 1 → **CORREGIDO** (NUEVO-BUG-01 TVP→transacción) | [x] |
 | Sistema.Datos/DArticulo.vb                  | 0                | [x]      |
 | Sistema.Datos/DPersona.vb                   | 0                | [x]      |
-| Sistema.Datos/DUsuario.vb                   | 0 (no revisado en detalle) | [x] |
-| Sistema.Negocio/NVenta.vb                   | 0 (fixes previos OK) | [x]  |
+| Sistema.Datos/DUsuario.vb                   | 0                | [x]      |
+| Sistema.Negocio/NVenta.vb                   | 0                | [x]      |
 | Sistema.Negocio/NIngreso.vb                 | 0                | [x]      |
-| Sistema.Negocio/NArticulo.vb                | 0 (no revisado en detalle) | [x] |
-| Sistema.Presentacion/FrmVenta.vb            | 0 (fixes previos OK) | [x]  |
-| Sistema.Presentacion/FrmIngreso.vb          | 1 → **CORREGIDO** (BUG-01) | [x] |
+| Sistema.Negocio/NArticulo.vb                | 0                | [x]      |
+| Sistema.Presentacion/FrmVenta.vb            | 1 → **CORREGIDO** (NUEVO-BUG-02 BtnAnular) | [x] |
+| Sistema.Presentacion/FrmIngreso.vb          | 1 → **CORREGIDO** (BUG-01 MsgBox + NUEVO-BUG-03 subsumido) | [x] |
+| DataBase/02_Vistas.sql                      | 0 (BUG-06 ✅ resuelto: articulo.estado es BIT) | [x] |
 | DataBase/03_StoredProcedures.sql            | 3 → **CORREGIDOS** (BUG-03/04/05) | [x] |
 | DataBase/04_Triggers.sql                    | MISSING → **CREADO** (BUG-02) | [x] |
-| DataBase/02_Vistas.sql                      | 1 → ⚠️ PENDIENTE (BUG-06 — tipo estado) | [x] |
-| DataBase/05_SP_Cursor.sql                   | 1 → ⚠️ PENDIENTE (BUG-06 — tipo estado) | [x] |
+| DataBase/05_SP_Cursor.sql                   | 0 (BUG-06 ✅ resuelto: articulo.estado es BIT) | [x] |
 | DataBase/06_TRG_Ingreso.sql                 | 0                | [x]      |
+| DataBase/07_SP_Ingreso.sql                  | NUEVO → **CREADO** (fix NUEVO-BUG-01) | [x] |
 
 ---
 
-### Acciones pendientes para el usuario:
+### Acciones pendientes para el usuario (ejecutar en SSMS):
 
-1. **Ejecutar `04_Triggers.sql` en SSMS** — Los triggers TRG02 y TRG03 deben crearse en la BD.
-2. **Ejecutar `03_StoredProcedures.sql` en SSMS** — Los SPs corregidos deben actualizarse en la BD.
-3. **Verificar tipo de `articulo.estado`** en SSMS con:
-   ```sql
-   SELECT COLUMN_NAME, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS
-   WHERE TABLE_NAME = 'articulo' AND COLUMN_NAME = 'estado';
-   ```
-   - Si `DATA_TYPE = 'bit'`: OK, no requiere cambio
-   - Si `DATA_TYPE = 'varchar'`: cambiar `A.estado = 1` → `A.estado = 'Activo'` en `vw_StockValorizado` y `sp_InventarioValorizado`
-4. **Verificar SP `ingreso_insertar`** en SSMS — Confirmar si usa TVP o parámetros individuales.
+1. **Ejecutar `02_Vistas.sql`** — Crea/actualiza vw_VentasDetalladas, vw_ComprasDetalladas, vw_StockValorizado.
+2. **Ejecutar `03_StoredProcedures.sql`** — SPs corregidos (sp_VentaInsertar con validaciones, sp_VentaAnular con guard, sp_VentaBuscarPorFechas, sp_Consulta*).
+3. **Ejecutar `04_Triggers.sql`** — TRG02 (descontar stock) + TRG03 (restaurar stock al anular).
+4. **Ejecutar `05_SP_Cursor.sql`** — sp_ReporteVentasPorPeriodo + sp_InventarioValorizado.
+5. **Ejecutar `06_TRG_Ingreso.sql`** — TRG01 (incrementar stock al ingresar mercancía).
+6. **Ejecutar `07_SP_Ingreso.sql`** — sp_IngresoInsertar + sp_DetalleIngresoInsertar (NUEVO — reemplaza TVP).
+
+> **NOTA:** Los SPs originales del sistema (articulo_listar, articulo_buscar, ingreso_listar, etc.) deben existir ya en la BD. Solo los scripts nuevos/corregidos listados arriba requieren ejecución.
 
 ---
 
-*Generado por AGENTE_PRUEBAS.md v1.0 — Sistema POS — Análisis completo 2026-05-18*
+*Actualizado 2026-05-18 — Análisis de QA completo + 2 bugs nuevos corregidos*

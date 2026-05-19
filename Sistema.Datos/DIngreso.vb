@@ -76,29 +76,49 @@ Public Class DIngreso
         End Try
     End Function
 
+    ' NUEVO-BUG-01 FIX: reemplaza SqlDbType.Structured (TVP) por transaccion
+    ' explicita fila a fila, identico al patron de DVenta.InsertarConDetalle.
+    ' TRG01 (trg_Ingreso_ActualizarStock) se activa automaticamente al insertar
+    ' cada linea en detalle_ingreso e incrementa el stock del articulo.
+    ' Det debe tener columnas: idarticulo, cantidad, precio
     Public Sub Insertar(Obj As Ingreso, Det As DataTable)
+        Dim Trx As SqlTransaction = Nothing
         Try
-            ' Obj hace una instancia en la clase Ingreso
-            ' Creamos un comando SQL para ejecutar el procedimiento almacenado
-            ' El primer parametro hace referencia  al procedimiento almacenado de la base de datos
-            ' El segundo parametro hace refeencia a la cadena de conexion para la base de datos
-            ' Como heredamos la clase de la clase conexion, podemos usar MyBase para acceder a sus propiedades y metodos
-            Dim Comando As New SqlCommand("ingreso_insertar", MyBase.conn)
-            Comando.CommandType = CommandType.StoredProcedure ' indicamos que es un procedimiento almacenado 
-            Comando.Parameters.Add("@idingreso", SqlDbType.Int).Value = Obj.IdIngreso ' Agrega el parámetro @Nombre al comando SQL, asignando el valor de la propiedad Nombre del objeto Categoria. Esto permite enviar el nombre de la nueva categoría al procedimiento almacenado en la base de datos.
-            Comando.Parameters("@idingreso").Direction = ParameterDirection.Output
-            Comando.Parameters.Add("@idusuario", SqlDbType.Int).Value = Obj.IdUsuario
-            Comando.Parameters.Add("@idproveedor", SqlDbType.Int).Value = Obj.IdProveedor
-            Comando.Parameters.Add("@tipo_comprobante", SqlDbType.VarChar).Value = Obj.TipoComprobante
-            Comando.Parameters.Add("@serie_comprobante", SqlDbType.VarChar).Value = Obj.SerieComprobante
-            Comando.Parameters.Add("@num_comprobante", SqlDbType.VarChar).Value = Obj.NumComprobante
-            Comando.Parameters.Add("@impuesto", SqlDbType.Decimal).Value = Obj.Impuesto
-            Comando.Parameters.Add("@total", SqlDbType.Decimal).Value = Obj.Total
-            Comando.Parameters.Add("@detalle", SqlDbType.Structured).Value = Det
-            MyBase.conn.Open() ' Abrimos la conexion
-            Comando.ExecuteNonQuery() ' Ejecutamos el comando y almacenamos el resultado en Resultado
-            MyBase.conn.Close() ' Cerramos la conexion
+            MyBase.conn.Open()
+            Trx = MyBase.conn.BeginTransaction()
+
+            ' 1. Insertar cabecera — recuperar idIngreso generado via OUTPUT
+            Dim CmdCab As New SqlCommand("sp_IngresoInsertar", MyBase.conn, Trx)
+            CmdCab.CommandType = CommandType.StoredProcedure
+            CmdCab.Parameters.Add("@idProveedor", SqlDbType.Int).Value = Obj.IdProveedor
+            CmdCab.Parameters.Add("@idUsuario", SqlDbType.Int).Value = Obj.IdUsuario
+            CmdCab.Parameters.Add("@tipo_comprobante", SqlDbType.VarChar).Value = Obj.TipoComprobante
+            CmdCab.Parameters.Add("@serie_comprobante", SqlDbType.VarChar).Value = If(Obj.SerieComprobante IsNot Nothing, Obj.SerieComprobante, "")
+            CmdCab.Parameters.Add("@num_comprobante", SqlDbType.VarChar).Value = Obj.NumComprobante
+            CmdCab.Parameters.Add("@impuesto", SqlDbType.Decimal).Value = Obj.Impuesto
+            CmdCab.Parameters.Add("@total", SqlDbType.Decimal).Value = Obj.Total
+            Dim ParamId As New SqlParameter("@idIngreso", SqlDbType.Int)
+            ParamId.Direction = ParameterDirection.Output
+            CmdCab.Parameters.Add(ParamId)
+            CmdCab.ExecuteNonQuery()
+            Dim NuevoId As Integer = Convert.ToInt32(ParamId.Value)
+
+            ' 2. Insertar cada linea de detalle (TRG01 incrementa stock por linea)
+            For Each Fila As DataRow In Det.Rows
+                Dim CmdDet As New SqlCommand("sp_DetalleIngresoInsertar", MyBase.conn, Trx)
+                CmdDet.CommandType = CommandType.StoredProcedure
+                CmdDet.Parameters.Add("@idIngreso", SqlDbType.Int).Value = NuevoId
+                CmdDet.Parameters.Add("@idArticulo", SqlDbType.Int).Value = Convert.ToInt32(Fila("idarticulo"))
+                CmdDet.Parameters.Add("@cantidad", SqlDbType.Int).Value = Convert.ToInt32(Fila("cantidad"))
+                CmdDet.Parameters.Add("@precio", SqlDbType.Decimal).Value = Convert.ToDecimal(Fila("precio"))
+                CmdDet.ExecuteNonQuery()
+            Next
+
+            Trx.Commit()
+            MyBase.conn.Close()
         Catch ex As Exception
+            If Trx IsNot Nothing Then Trx.Rollback()
+            MyBase.conn.Close()
             Throw ex
         End Try
     End Sub
