@@ -324,12 +324,27 @@ Public Class FrmVenta
     End Sub
 
     ' ── Anular la venta seleccionada en el listado ───────────────────────────
+    ' NUEVO-BUG-02 FIX: busca la fila con checkbox "Seleccionar" = True
+    ' en lugar de usar CurrentRow, que apuntaba a la ultima fila clickeada.
     Private Sub BtnAnular_Click(sender As Object, e As EventArgs) Handles BtnAnular.Click
-        If DgvListado.CurrentRow Is Nothing Then
-            MsgBox("Seleccione una venta de la lista.", vbOKOnly + vbExclamation, "Sin selección")
+        Dim FilaSeleccionada As DataGridViewRow = Nothing
+        For Each Fila As DataGridViewRow In DgvListado.Rows
+            Dim CeldaChk As DataGridViewCheckBoxCell =
+                TryCast(Fila.Cells("Seleccionar"), DataGridViewCheckBoxCell)
+            If CeldaChk IsNot Nothing AndAlso
+               CeldaChk.Value IsNot Nothing AndAlso
+               Convert.ToBoolean(CeldaChk.Value) = True Then
+                FilaSeleccionada = Fila
+                Exit For
+            End If
+        Next
+
+        If FilaSeleccionada Is Nothing Then
+            MsgBox("Marque el checkbox de la venta que desea anular.", vbOKOnly + vbExclamation, "Sin selección")
             Return
         End If
-        Dim IdVenta As Integer = Convert.ToInt32(DgvListado.CurrentRow.Cells("idventa").Value)
+
+        Dim IdVenta As Integer = Convert.ToInt32(FilaSeleccionada.Cells("idventa").Value)
         If MsgBox("¿Anular la venta seleccionada?" & vbCrLf &
                   "El stock se restaurará automáticamente (TRG03).",
                   vbYesNo + vbQuestion, "Confirmar anulación") = MsgBoxResult.Yes Then

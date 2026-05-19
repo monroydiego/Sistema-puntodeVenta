@@ -29,9 +29,12 @@ Sistema.sln
 ├── Sistema.Presentacion     ← WinForms UI (formularios)
 └── Sistema.Docs             ← Scripts SQL y Documentación (NO compila)
     ├── DataBase/
+    │   ├── 02_Vistas.sql
     │   ├── 03_StoredProcedures.sql
     │   ├── 04_Triggers.sql
-    │   └── [pendientes: 02_Vistas, 05_SP_Cursor, 06_TRG_Ingreso]
+    │   ├── 05_SP_Cursor.sql
+    │   ├── 06_TRG_Ingreso.sql
+    │   └── 07_SP_Ingreso.sql  ← NUEVO: sp_IngresoInsertar + sp_DetalleIngresoInsertar
     └── Documentation/
         ├── CLAUDE.md
         ├── GUIA_SESION_VENTA.md
@@ -137,6 +140,9 @@ Sistema.Docs/DataBase/:
   ✅ 04_Triggers.sql         (TRG02: trg_Venta_DescontarStock+guard stock insuf,
                                TRG03: trg_Venta_RestaurarStock+detección estado)
                                ⚠️ PENDIENTE: ejecutar en SSMS
+  ✅ 07_SP_Ingreso.sql       (sp_IngresoInsertar+OUTPUT, sp_DetalleIngresoInsertar)
+                               Fix NUEVO-BUG-01: reemplaza TVP por transacción explícita
+                               ⚠️ PENDIENTE: ejecutar en SSMS
 ```
 
 ### ❌ PENDIENTE — Lo que falta construir:
@@ -148,8 +154,9 @@ Sistema.Docs/DataBase/:
 ✅  FrmIngreso.vb:263 → BUG-01 corregido → MsgBox error solo cuando Neg.Insertar=False
 ✅  sp_VentaAnular → BUG-03 corregido → THROW 50004 si venta ya anulada/inexistente
 ✅  sp_VentaInsertar → BUG-04/05 corregidos → THROW 50001 (sin cliente) / 50002 (total=0)
-⚠️  vw_StockValorizado + sp_InventarioValorizado → verificar tipo articulo.estado (BIT vs VARCHAR)
-⚠️  ingreso_insertar (SP original) → verificar compatibilidad con SqlDbType.Structured en DIngreso
+✅  articulo.estado BIT confirmado por ScriptSalida.md → A.estado=1 es correcto (BUG-06 cerrado)
+✅  DIngreso.vb → NUEVO-BUG-01 corregido → transacción explícita reemplaza SqlDbType.Structured
+✅  FrmVenta.vb BtnAnular → NUEVO-BUG-02 corregido → itera filas por checkbox en lugar de CurrentRow
 
 [MÓDULO VENTAS — UI]
 ✅ FrmVenta.vb + FrmVenta.Designer.vb
