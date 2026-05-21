@@ -47,34 +47,27 @@ AFTER INSERT
 AS
 BEGIN
     SET NOCOUNT ON;
-    BEGIN TRY
-        -- Validar stock suficiente para todos los articulos del INSERT
-        -- Si alguno tiene stock < cantidad pedida, abortar todo
-        IF EXISTS (
-            SELECT 1
-            FROM   inserted I
-            INNER JOIN articulo A ON A.idarticulo = I.idarticulo
-            WHERE  A.stock < I.cantidad
-        )
-        BEGIN
-            ROLLBACK TRANSACTION;
-            RAISERROR(N'Stock insuficiente para uno o mas articulos de la venta.', 16, 1);
-            RETURN;
-        END;
 
-        -- Decrementar el stock de cada articulo en 'inserted'
-        -- El JOIN soporta inserciones en lote de forma atomica
-        UPDATE articulo
-        SET    stock = A.stock - I.cantidad
-        FROM   articulo A
-        INNER JOIN inserted I ON A.idarticulo = I.idarticulo;
+    -- Validar stock suficiente para todos los articulos del INSERT.
+    -- Se usa THROW sin TRY/CATCH para que el error salga del trigger
+    -- sin modificar @@TRANCOUNT: la transaccion externa de VB.NET
+    -- sigue activa y puede hacer ROLLBACK correctamente (evita error 266).
+    IF EXISTS (
+        SELECT 1
+        FROM   inserted I
+        INNER JOIN articulo A ON A.idarticulo = I.idarticulo
+        WHERE  A.stock < I.cantidad
+    )
+    BEGIN
+        THROW 50003, N'Stock insuficiente para uno o mas articulos de la venta.', 1;
+    END;
 
-    END TRY
-    BEGIN CATCH
-        IF @@TRANCOUNT > 0 ROLLBACK TRANSACTION;
-        DECLARE @msg2 NVARCHAR(4000) = ERROR_MESSAGE();
-        RAISERROR(@msg2, 16, 1);
-    END CATCH
+    -- Decrementar el stock de cada articulo en 'inserted'
+    -- El JOIN soporta inserciones en lote de forma atomica
+    UPDATE articulo
+    SET    stock = A.stock - I.cantidad
+    FROM   articulo A
+    INNER JOIN inserted I ON A.idarticulo = I.idarticulo;
 END
 GO
 

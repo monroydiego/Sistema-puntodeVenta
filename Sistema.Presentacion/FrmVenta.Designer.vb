@@ -44,6 +44,7 @@ Partial Class FrmVenta
         Me.GroupBox2 = New System.Windows.Forms.GroupBox()
         Me.Label7 = New System.Windows.Forms.Label()
         Me.BtnBuscarArticulos = New System.Windows.Forms.Button()
+        Me.BtnQuitarArticulo = New System.Windows.Forms.Button()
         Me.TxtCodigo = New System.Windows.Forms.TextBox()
         Me.Label5 = New System.Windows.Forms.Label()
         Me.TxtTotal = New System.Windows.Forms.TextBox()
@@ -321,6 +322,7 @@ Partial Class FrmVenta
         '
         Me.GroupBox2.Controls.Add(Me.Label7)
         Me.GroupBox2.Controls.Add(Me.BtnBuscarArticulos)
+        Me.GroupBox2.Controls.Add(Me.BtnQuitarArticulo)
         Me.GroupBox2.Controls.Add(Me.TxtCodigo)
         Me.GroupBox2.Controls.Add(Me.Label5)
         Me.GroupBox2.Controls.Add(Me.TxtTotal)
@@ -360,6 +362,15 @@ Partial Class FrmVenta
         Me.BtnBuscarArticulos.TabIndex = 2
         Me.BtnBuscarArticulos.Text = "Buscar Artículo"
         Me.BtnBuscarArticulos.UseVisualStyleBackColor = True
+        '
+        'BtnQuitarArticulo
+        '
+        Me.BtnQuitarArticulo.Location = New System.Drawing.Point(370, 20)
+        Me.BtnQuitarArticulo.Name = "BtnQuitarArticulo"
+        Me.BtnQuitarArticulo.Size = New System.Drawing.Size(130, 25)
+        Me.BtnQuitarArticulo.TabIndex = 10
+        Me.BtnQuitarArticulo.Text = "Quitar Artículo"
+        Me.BtnQuitarArticulo.UseVisualStyleBackColor = True
         '
         'DgvDetalle
         '
@@ -568,6 +579,7 @@ Partial Class FrmVenta
     Friend WithEvents GroupBox2 As GroupBox
     Friend WithEvents Label7 As Label
     Friend WithEvents BtnBuscarArticulos As Button
+    Friend WithEvents BtnQuitarArticulo As Button
     Friend WithEvents TxtCodigo As TextBox
     Friend WithEvents Label5 As Label
     Friend WithEvents TxtTotal As TextBox

@@ -176,7 +176,11 @@ Public Class FrmArticulo
             Imagen = DgvListado.SelectedCells.Item(9).Value
             ' al momento de actualizar mostraremos la imagen en el picturebox
             If (Imagen <> "") Then
-                PicImagen.Image = Image.FromFile(Directorio & Imagen)
+                If System.IO.File.Exists(Directorio & Imagen) Then
+                    PicImagen.Image = Image.FromFile(Directorio & Imagen)
+                Else
+                    PicImagen.Image = Nothing
+                End If
                 txtImagen.Text = Imagen
 
             Else

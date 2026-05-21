@@ -180,9 +180,17 @@ Public Class FrmVenta
     Private Sub BtnBuscar_Click(sender As Object, e As EventArgs) Handles BtnBuscar.Click
         Try
             Dim Neg As New Negocio.NVenta
-            DgvListado.DataSource = Neg.Listar()
-            LblTotal.Text = "Total Registros: " & DgvListado.DataSource.Rows.Count.ToString()
-            Me.Formato()
+            Dim Resultado As DataTable
+            If TxtValor.Text.Trim() = "" Then
+                Resultado = Neg.Listar()
+            Else
+                Resultado = Neg.Buscar(TxtValor.Text.Trim())
+            End If
+            If Resultado IsNot Nothing Then
+                DgvListado.DataSource = Resultado
+                LblTotal.Text = "Total Registros: " & DgvListado.DataSource.Rows.Count.ToString()
+                Me.Formato()
+            End If
         Catch ex As Exception
             MsgBox(ex.Message)
         End Try
@@ -250,9 +258,12 @@ Public Class FrmVenta
     Private Sub BtnBuscarArticulosDetalle_Click(sender As Object, e As EventArgs) Handles BtnBuscarArticulosDetalle.Click
         Try
             Dim Neg As New Negocio.NArticulo
-            DgvArticulos.DataSource = Neg.Buscar(TxtBuscarArticulos.Text)
-            LblTotalArticulos.Text = "Total Artículos: " & DgvArticulos.DataSource.Rows.Count
-            Me.FormatoArticulos()
+            Dim Resultado As DataTable = Neg.Buscar(TxtBuscarArticulos.Text)
+            If Resultado IsNot Nothing Then
+                DgvArticulos.DataSource = Resultado
+                LblTotalArticulos.Text = "Total Artículos: " & DgvArticulos.DataSource.Rows.Count
+                Me.FormatoArticulos()
+            End If
         Catch ex As Exception
             MsgBox(ex.Message)
         End Try
@@ -321,6 +332,21 @@ Public Class FrmVenta
     Private Sub ChkSeleccionar_CheckedChanged(sender As Object, e As EventArgs) Handles ChkSeleccionar.CheckedChanged
         DgvListado.Columns.Item("Seleccionar").Visible = ChkSeleccionar.Checked
         BtnAnular.Visible = ChkSeleccionar.Checked
+    End Sub
+
+    ' ── Permite marcar/desmarcar el checkbox de cada fila del listado ────────
+    ' DgvListado.ReadOnly = True, por eso el toggle se hace manualmente aquí
+    ' (mismo patrón que FrmArticulo.DgvListado_CellContentClick)
+    Private Sub DgvListado_CellContentClick(sender As Object, e As DataGridViewCellEventArgs) Handles DgvListado.CellContentClick
+        If e.RowIndex < 0 Then Return
+        If e.ColumnIndex = DgvListado.Columns.Item("Seleccionar").Index Then
+            Dim CeldaChk As DataGridViewCheckBoxCell =
+                TryCast(DgvListado.Rows(e.RowIndex).Cells("Seleccionar"), DataGridViewCheckBoxCell)
+            If CeldaChk IsNot Nothing Then
+                CeldaChk.Value = Not Convert.ToBoolean(CeldaChk.Value)
+                DgvListado.RefreshEdit()
+            End If
+        End If
     End Sub
 
     ' ── Anular la venta seleccionada en el listado ───────────────────────────
@@ -402,6 +428,16 @@ Public Class FrmVenta
     ' ── Cancelar / limpiar formulario ────────────────────────────────────────
     Private Sub BtnCancelar_Click(sender As Object, e As EventArgs) Handles BtnCancelar.Click
         Me.Limpiar()
+    End Sub
+
+    ' ── Quitar artículo seleccionado del detalle ─────────────────────────────
+    Private Sub BtnQuitarArticulo_Click(sender As Object, e As EventArgs) Handles BtnQuitarArticulo.Click
+        If DgvDetalle.CurrentRow IsNot Nothing AndAlso DgvDetalle.CurrentRow.Index >= 0 Then
+            DtDetalle.Rows.RemoveAt(DgvDetalle.CurrentRow.Index)
+            Me.CalcularTotales()
+        Else
+            MsgBox("Seleccione un artículo del detalle para quitarlo.", vbOKOnly + vbExclamation, "Sin selección")
+        End If
     End Sub
 
 End Class

@@ -43,6 +43,17 @@ Public Class NVenta
         End Try
     End Function
 
+    ' Busca ventas activas por nombre de cliente, num documento o num comprobante
+    Public Function Buscar(Valor As String) As DataTable
+        Try
+            Dim Datos As New DVenta
+            Return Datos.Buscar(Valor)
+        Catch ex As Exception
+            MsgBox(ex.Message)
+            Return Nothing
+        End Try
+    End Function
+
     ' Busca ventas en un rango de fechas usando vw_VentasDetalladas
     Public Function BuscarPorFechas(FechaInicio As Date, FechaFin As Date) As DataTable
         Try

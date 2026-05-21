@@ -29,9 +29,13 @@
   <ItemGroup>
     <None Include="Documentation\CLAUDE.md" />
     <None Include="Documentation\Especificacion_Requerimientos.md" />
+    <None Include="Documentation\FLUJO_FUNCIONAMIENTO.md" />
     <None Include="Documentation\GUIA_CLAUDE_CODE.md" />
     <None Include="Documentation\GUIA_SESION_VENTA.md" />
+    <None Include="Documentation\HOTFIXES_v1.md" />
     <None Include="Documentation\README.md" />
+    <None Include="Documentation\RESULTADOS_PRUEBAS.md" />
+    <None Include="Documentation\ScriptSalida.md" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="DataBase\" />

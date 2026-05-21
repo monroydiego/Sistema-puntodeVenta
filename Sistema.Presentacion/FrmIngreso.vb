@@ -234,13 +234,19 @@
     End Sub
 
     Private Sub DgvDetalle_CellEndEdit(sender As Object, e As DataGridViewCellEventArgs) Handles DgvDetalle.CellEndEdit
-        Dim Fila As DataGridViewRow = CType(DgvDetalle.Rows(e.RowIndex), DataGridViewRow)
-        Dim Precio As Decimal = Fila.Cells("precio").Value
-        Dim Cantidad As Integer = Fila.Cells("cantidad").Value
+        If e.RowIndex < 0 Then Return
+        Dim Fila As DataGridViewRow = DgvDetalle.Rows(e.RowIndex)
 
-        Fila.Cells("importe").Value = Precio * Cantidad
+        Dim Precio As Decimal = 0
+        Dim Cantidad As Integer = 1
+        Decimal.TryParse(Convert.ToString(Fila.Cells("precio").Value), Precio)
+        If Not Integer.TryParse(Convert.ToString(Fila.Cells("cantidad").Value), Cantidad) OrElse Cantidad < 1 Then
+            Cantidad = 1
+            Fila.Cells("cantidad").Value = 1
+        End If
+
+        Fila.Cells("importe").Value = Math.Round(Precio * Cantidad, 2)
         Me.CalcularTotales()
-
     End Sub
 
     Private Sub DgvDetalle_RowsRemoved(sender As Object, e As DataGridViewRowsRemovedEventArgs) Handles DgvDetalle.RowsRemoved

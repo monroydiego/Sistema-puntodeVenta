@@ -326,6 +326,55 @@ BEGIN
 END
 GO
 
+-- ============================================================
+-- 11. sp_VentaBuscar
+--     Busca ventas activas por nombre de cliente, numero de
+--     documento o numero de comprobante (busqueda parcial LIKE).
+--     Devuelve las mismas columnas que sp_VentaListar para que
+--     FrmVenta.Formato() funcione sin cambios.
+-- ============================================================
+CREATE OR ALTER PROCEDURE sp_VentaBuscar
+    @valor VARCHAR(100)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRY
+        SELECT
+            V.idventa,
+            V.idcliente,
+            P.nombre                                    AS cliente,
+            P.num_documento                             AS doc_cliente,
+            V.tipo_comprobante,
+            V.serie_comprobante,
+            V.num_comprobante,
+            V.fecha,
+            V.impuesto,
+            V.total,
+            V.estado,
+            CASE
+                WHEN V.total > 1000          THEN 'Alta'
+                WHEN V.total BETWEEN 500
+                              AND 1000       THEN 'Media'
+                ELSE                              'Baja'
+            END                                         AS clasificacion,
+            (SELECT COUNT(*)
+             FROM   detalle_venta DV
+             WHERE  DV.idventa = V.idventa)             AS num_articulos
+        FROM  venta   V
+        INNER JOIN persona P ON V.idcliente = P.idpersona
+        WHERE V.estado = 'Activo'
+          AND (P.nombre          LIKE '%' + @valor + '%'
+            OR V.num_comprobante LIKE '%' + @valor + '%'
+            OR P.num_documento   LIKE '%' + @valor + '%')
+        ORDER BY V.fecha DESC;
+    END TRY
+    BEGIN CATCH
+        DECLARE @msg11 NVARCHAR(4000) = ERROR_MESSAGE();
+        RAISERROR(@msg11, 16, 1);
+    END CATCH
+END
+GO
+
 --SELECT COLUMN_NAME, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS
 --WHERE TABLE_NAME = 'articulo' AND COLUMN_NAME = 'estado';
 
