@@ -171,13 +171,14 @@ GO
 
 -- ============================================================
 -- 5. sp_VentaListar  *** CONSULTA COMPLEJA ***
---    Lista todas las ventas activas con datos del cliente.
+--    Lista TODAS las ventas (Activas y Anuladas) con datos del cliente.
+--    Se muestra el estado para que el usuario distinga ventas anuladas.
 --
 --    Elementos de consulta compleja:
 --      - INNER JOIN: venta → persona (obtiene nombre del cliente)
 --      - CASE/WHEN:  clasifica el monto total en Alta/Media/Baja
 --      - COUNT en subquery: cantidad de articulos por venta
---      - ORDER BY: ordena por fecha descendente
+--      - ORDER BY: ordena por fecha descendente (anuladas al final)
 -- ============================================================
 CREATE OR ALTER PROCEDURE sp_VentaListar
 AS
@@ -209,8 +210,8 @@ BEGIN
              WHERE  DV.idventa = V.idventa)             AS num_articulos
         FROM  venta   V
         INNER JOIN persona P ON V.idcliente = P.idpersona
-        WHERE V.estado = 'Activo'
-        ORDER BY V.fecha DESC;
+        ORDER BY CASE WHEN V.estado = 'Activo' THEN 0 ELSE 1 END,
+                 V.fecha DESC;
     END TRY
     BEGIN CATCH
         DECLARE @msg5 NVARCHAR(4000) = ERROR_MESSAGE();

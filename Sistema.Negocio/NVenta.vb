@@ -131,4 +131,18 @@ Public Class NVenta
             Return False
         End Try
     End Function
+
+    ' Reporte de ventas por período con clasificación y acumulado (usa SP con CURSOR)
+    Public Function ReporteVentasPorPeriodo(FechaInicio As Date, FechaFin As Date) As DataSet
+        Try
+            If FechaInicio > FechaFin Then
+                Throw New Exception("La fecha de inicio no puede ser mayor a la fecha fin.")
+            End If
+            Dim Datos As New DVenta
+            Return Datos.ReporteVentasPorPeriodo(FechaInicio, FechaFin)
+        Catch ex As Exception
+            MsgBox(ex.Message)
+            Return Nothing
+        End Try
+    End Function
 End Class

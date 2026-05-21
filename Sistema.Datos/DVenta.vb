@@ -108,6 +108,22 @@ Public Class DVenta
         End Try
     End Sub
 
+    ' Reporte de ventas por período con clasificación y acumulado (usa SP con CURSOR)
+    Public Function ReporteVentasPorPeriodo(FechaInicio As Date, FechaFin As Date) As DataSet
+        Try
+            Dim Ds As New DataSet
+            Dim Comando As New SqlCommand("sp_ReporteVentasPorPeriodo", MyBase.conn)
+            Comando.CommandType = CommandType.StoredProcedure
+            Comando.Parameters.Add("@fechaInicio", SqlDbType.Date).Value = FechaInicio
+            Comando.Parameters.Add("@fechaFin", SqlDbType.Date).Value = FechaFin
+            Dim Da As New SqlDataAdapter(Comando)
+            Da.Fill(Ds)
+            Return Ds
+        Catch ex As Exception
+            Throw ex
+        End Try
+    End Function
+
     ' Consulta vw_VentasDetalladas por rango de fechas (una fila por línea de detalle)
     Public Function ConsultarDetallado(FechaInicio As Date, FechaFin As Date) As DataTable
         Try

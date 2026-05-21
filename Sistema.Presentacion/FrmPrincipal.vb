@@ -235,4 +235,16 @@ Public Class MDIParent1
         frm.MdiParent = Me
         frm.Show()
     End Sub
+
+    Private Sub ReporteVentasPeriodoToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ReporteVentasPeriodoToolStripMenuItem.Click
+        Dim frm As New FrmReporteVentasPeriodo
+        frm.MdiParent = Me
+        frm.Show()
+    End Sub
+
+    Private Sub ReporteInventarioToolStripMenuItem_Click(sender As Object, e As EventArgs) Handles ReporteInventarioToolStripMenuItem.Click
+        Dim frm As New FrmReporteInventario
+        frm.MdiParent = Me
+        frm.Show()
+    End Sub
 End Class

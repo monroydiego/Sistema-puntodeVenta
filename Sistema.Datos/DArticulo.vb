@@ -164,17 +164,32 @@ Public Class DArticulo
         End Try
     End Sub
 
-    ' Metodo para activar una categoria 
+    ' Metodo para activar una categoria
     Public Sub Activar(Id As Integer)
         Try
             Dim Comando As New SqlCommand("articulo_activar", MyBase.conn)
             Comando.CommandType = CommandType.StoredProcedure
             Comando.Parameters.Add("@idarticulo", SqlDbType.Int).Value = Id ' se envia id  del articulo que se desea activar
-            MyBase.conn.Open() ' Abrimos la conexion 
+            MyBase.conn.Open() ' Abrimos la conexion
             Comando.ExecuteNonQuery()
             MyBase.conn.Close()
         Catch ex As Exception
             Throw ex
         End Try
     End Sub
+
+    ' Reporte de inventario valorizado con análisis de niveles de stock (usa SP con CURSOR)
+    Public Function ReporteInventarioValorizado(StockMinimo As Integer) As DataSet
+        Try
+            Dim Ds As New DataSet
+            Dim Comando As New SqlCommand("sp_InventarioValorizado", MyBase.conn)
+            Comando.CommandType = CommandType.StoredProcedure
+            Comando.Parameters.Add("@stockMinimo", SqlDbType.Int).Value = StockMinimo
+            Dim Da As New SqlDataAdapter(Comando)
+            Da.Fill(Ds)
+            Return Ds
+        Catch ex As Exception
+            Throw ex
+        End Try
+    End Function
 End Class

@@ -42,6 +42,8 @@ Partial Class MDIParent1
         Me.ConsultaVentasToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ConsultaComprasToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StockValorizadoToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ReporteVentasPeriodoToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
+        Me.ReporteInventarioToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.ViewMenu = New System.Windows.Forms.ToolStripMenuItem()
         Me.ToolBarToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
         Me.StatusBarToolStripMenuItem = New System.Windows.Forms.ToolStripMenuItem()
@@ -164,7 +166,7 @@ Partial Class MDIParent1
         '
         'MnuConsultas
         '
-        Me.MnuConsultas.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ConsultaVentasToolStripMenuItem, Me.ConsultaComprasToolStripMenuItem, Me.StockValorizadoToolStripMenuItem})
+        Me.MnuConsultas.DropDownItems.AddRange(New System.Windows.Forms.ToolStripItem() {Me.ConsultaVentasToolStripMenuItem, Me.ConsultaComprasToolStripMenuItem, Me.StockValorizadoToolStripMenuItem, Me.ReporteVentasPeriodoToolStripMenuItem, Me.ReporteInventarioToolStripMenuItem})
         Me.MnuConsultas.Name = "MnuConsultas"
         Me.MnuConsultas.Size = New System.Drawing.Size(71, 20)
         Me.MnuConsultas.Text = "Consultas"
@@ -186,6 +188,18 @@ Partial Class MDIParent1
         Me.StockValorizadoToolStripMenuItem.Name = "StockValorizadoToolStripMenuItem"
         Me.StockValorizadoToolStripMenuItem.Size = New System.Drawing.Size(200, 22)
         Me.StockValorizadoToolStripMenuItem.Text = "Stock Valorizado"
+        '
+        'ReporteVentasPeriodoToolStripMenuItem
+        '
+        Me.ReporteVentasPeriodoToolStripMenuItem.Name = "ReporteVentasPeriodoToolStripMenuItem"
+        Me.ReporteVentasPeriodoToolStripMenuItem.Size = New System.Drawing.Size(200, 22)
+        Me.ReporteVentasPeriodoToolStripMenuItem.Text = "Reporte Ventas por Período"
+        '
+        'ReporteInventarioToolStripMenuItem
+        '
+        Me.ReporteInventarioToolStripMenuItem.Name = "ReporteInventarioToolStripMenuItem"
+        Me.ReporteInventarioToolStripMenuItem.Size = New System.Drawing.Size(200, 22)
+        Me.ReporteInventarioToolStripMenuItem.Text = "Reporte Inventario Valorizado"
         '
         'ViewMenu
         '
@@ -458,5 +472,7 @@ Partial Class MDIParent1
     Friend WithEvents ConsultaVentasToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents ConsultaComprasToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents StockValorizadoToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ReporteVentasPeriodoToolStripMenuItem As ToolStripMenuItem
+    Friend WithEvents ReporteInventarioToolStripMenuItem As ToolStripMenuItem
     Friend WithEvents MnuSalir As ToolStripMenuItem
 End Class

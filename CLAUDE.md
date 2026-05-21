@@ -194,8 +194,23 @@ Sistema.Docs/DataBase/:
 ✅ BL: NVenta/NIngreso.ConsultarDetallado, NArticulo.ConsultarStockValorizado
 ✅ FrmPrincipal: menu Consultas ampliado con Compras y Stock Valorizado
 
-[REPORTES]
-❌ RDLC: comprobante de venta, reporte artículos, reporte ventas
+[REPORTES — CURSOR SPs]
+✅ DAL: DVenta.ReporteVentasPorPeriodo, DArticulo.ReporteInventarioValorizado
+✅ BL: NVenta.ReporteVentasPorPeriodo, NArticulo.ReporteInventarioValorizado
+✅ FrmReporteVentasPeriodo + Designer — DateTimePicker → 2 DataGridView (detalle + resumen)
+   → Datos: sp_ReporteVentasPorPeriodo (cursor, 2 result sets)
+   → Columnas detalle: idventa, cliente, tipo_comprobante, num_comprobante, fecha, total, clasificacion
+   → Columnas resumen: clasificacion, cantidad_ventas, monto_total
+   → Totales: ventas por clasificación (Alta/Media/Baja)
+✅ FrmReporteInventario + Designer — NumericUpDown @stockMinimo → DataGridView
+   → Datos: sp_InventarioValorizado (cursor, 1 result set con niveles de stock)
+   → Columnas: idarticulo, codigo, nombre, categoria, stock, precio, nivel_stock, valor_economico
+   → Niveles: Agotado/Crítico/Bajo/Normal (CASE en cursor)
+   → Totales: artículos, valor inventario, artículos críticos/agotados
+✅ FrmPrincipal: menu Consultas ampliado con Reportes (Ventas por Período + Inventario)
+
+[RDLC]
+❌ RDLC: comprobante de venta, reporte artículos
 
 [IMPLEMENTACIÓN FINAL]
 ❌ Backup BD (.bak)

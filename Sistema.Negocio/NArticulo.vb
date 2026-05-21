@@ -104,13 +104,24 @@ Public Class NArticulo
     End Function
 
     Public Function Activar(Id As Integer) As Boolean
-        Try ' Si logramos Insertar devolvemos un True 
+        Try ' Si logramos Insertar devolvemos un True
             Dim Datos As New DArticulo
             Datos.Activar(Id) ' Llamamos el metodo Activar de la clase de la capa datos
             Return True
         Catch ex As Exception ' Si no logramos insertar Devolvemos un False
             MsgBox(ex.Message)
             Return False
+        End Try
+    End Function
+
+    ' Reporte de inventario valorizado — análisis de niveles de stock con cursor
+    Public Function ReporteInventarioValorizado(StockMinimo As Integer) As DataSet
+        Try
+            Dim Datos As New DArticulo
+            Return Datos.ReporteInventarioValorizado(StockMinimo)
+        Catch ex As Exception
+            MsgBox(ex.Message)
+            Return Nothing
         End Try
     End Function
 End Class
